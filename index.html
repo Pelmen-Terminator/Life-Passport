@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport V4 — Паспорт жизни</title>
+<title>Life Passport V5 — Паспорт жизни</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,6 @@
     --warning-bg: #fff3cd;
     --warning-border: #ffc107;
     --warning-text: #856404;
-    --cat-max-height: 400px;
     font-size: 16px;
   }
   [data-theme="dark"]{
@@ -267,16 +266,6 @@
     transition: border .2s, color .2s;
   }
   .badge .reset:hover{ border-color:var(--stamp); color:var(--stamp); }
-  .badge .export-btn{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:.68rem;
-    color: var(--text-secondary);
-    background:none; border:1px solid var(--border);
-    border-radius:999px; padding:4px 11px; cursor:pointer;
-    letter-spacing:.03em;
-    transition: border .2s, color .2s;
-  }
-  .badge .export-btn:hover{ border-color:var(--gold); color:var(--gold); }
 
   .page{
     background: var(--bg);
@@ -285,10 +274,9 @@
     padding:6px 0 18px;
     box-shadow: var(--card-shadow);
     position:relative;
-    overflow:hidden;
-    transition: background .3s, color .3s;
-    max-height: 800px;
     overflow-y: auto;
+    max-height: 800px;
+    transition: background .3s, color .3s;
   }
   .page::-webkit-scrollbar{
     width: 6px;
@@ -352,33 +340,14 @@
   }
   .cat-toggle.closed{ transform:rotate(-90deg); }
 
-  /* Category body with scroll */
   .cat-body{
     transition: max-height .4s ease, opacity .4s ease;
-    overflow-y: auto;
-    overflow-x: hidden;
-    max-height: var(--cat-max-height);
-    padding-right: 4px;
+    overflow: hidden;
   }
   .cat-body.closed{
     max-height: 0 !important;
     opacity: 0;
     padding-top: 0;
-    overflow: hidden;
-  }
-  .cat-body::-webkit-scrollbar{
-    width: 4px;
-  }
-  .cat-body::-webkit-scrollbar-track{
-    background: var(--input-bg);
-    border-radius: 10px;
-  }
-  .cat-body::-webkit-scrollbar-thumb{
-    background: var(--gold);
-    border-radius: 10px;
-  }
-  .cat-body::-webkit-scrollbar-thumb:hover{
-    background: var(--stamp);
   }
 
   .age-warning{
@@ -476,6 +445,12 @@
   .import-area{
     margin-top:12px;
     display:flex;
+    flex-direction:column;
+    gap:8px;
+    width:100%;
+  }
+  .import-area .row{
+    display:flex;
     gap:8px;
     flex-wrap:wrap;
     align-items:center;
@@ -493,6 +468,19 @@
     transition: border .2s, color .2s;
   }
   .import-area label:hover{ border-color:var(--gold); color:var(--gold); }
+  .import-area .export-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    color: var(--text-secondary);
+    background:var(--input-bg);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:4px 14px;
+    cursor:pointer;
+    letter-spacing:.03em;
+    transition: border .2s, color .2s;
+  }
+  .import-area .export-btn:hover{ border-color:var(--gold); color:var(--gold); }
 
   footer{
     text-align:center;
@@ -513,24 +501,15 @@
     margin-left:8px;
   }
 
-  .scroll-hint{
-    font-size:.6rem;
-    color: var(--text-secondary);
-    opacity:.5;
-    text-align:right;
-    padding-right:6px;
-    font-family:'IBM Plex Mono', monospace;
-    letter-spacing:.05em;
-  }
-
   @media (max-width:600px){
     .category{ padding:12px 14px 2px; }
     .task{ gap:10px; }
     .badge .bar{ width:80px; }
     .settings-panel{ grid-template-columns:1fr; }
     .task-date{ min-width:70px; font-size:.65rem; }
-    :root{ --cat-max-height: 280px; }
     .page{ max-height: 600px; }
+    .import-area .row{ flex-direction:column; align-items:stretch; }
+    .import-area .row label, .import-area .row button{ text-align:center; }
   }
   @media (prefers-reduced-motion: reduce){
     .stampmark{ transition:none; }
@@ -545,7 +524,7 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V4</span></h1>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V5</span></h1>
     <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
@@ -588,12 +567,24 @@
       </div>
     </label>
     <div class="import-area">
-      <span data-i18n="importExport">Импорт / Экспорт</span>
-      <label for="importFile">📥 Import JSON</label>
-      <input type="file" id="importFile" accept=".json">
-      <button class="export-btn" id="exportJSON">📤 JSON</button>
-      <button class="export-btn" id="exportCSV">📊 CSV</button>
-      <button class="export-btn" id="exportPDF">📄 PDF</button>
+      <div class="row">
+        <span data-i18n="importExport">📦 Импорт / Экспорт</span>
+      </div>
+      <div class="row">
+        <span style="font-size:.7rem;opacity:.6;">📥 Импорт</span>
+        <label for="importFileJSON">📄 JSON</label>
+        <input type="file" id="importFileJSON" accept=".json">
+        <label for="importFileCSV">📊 CSV</label>
+        <input type="file" id="importFileCSV" accept=".csv">
+        <label for="importFilePDF">📄 PDF</label>
+        <input type="file" id="importFilePDF" accept=".pdf">
+      </div>
+      <div class="row">
+        <span style="font-size:.7rem;opacity:.6;">📤 Экспорт</span>
+        <button class="export-btn" id="exportJSON">📄 JSON</button>
+        <button class="export-btn" id="exportCSV">📊 CSV</button>
+        <button class="export-btn" id="exportPDF">📄 PDF</button>
+      </div>
     </div>
   </div>
 
@@ -649,7 +640,8 @@
         water:"Водоёмы",
         adult:"Старше 18",
         entertainment:"Развлечения",
-        legal:"Право"
+        legal:"Право",
+        events:"События"
       }
     },
     en:{
@@ -681,17 +673,22 @@
         water:"Bodies of Water",
         adult:"18+",
         entertainment:"Entertainment",
-        legal:"Legal"
+        legal:"Legal",
+        events:"Events"
       }
     }
   };
 
-  // ===== TASKS V4 =====
+  // ===== TASKS V5 =====
   const TASKS = [
     // Milestones
     {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
     {id:"m2",cat:"milestones",ru:"Получил водительские права",en:"Got a driver's license"},
     {id:"m3",cat:"milestones",ru:"Закончил школу",en:"Finished school"},
+    {id:"m3a",cat:"milestones",ru:"  9 классов (Россия)",en:"  9th grade", dependsOn:"m3", langOnly:"ru"},
+    {id:"m3b",cat:"milestones",ru:"  11 классов (Россия)",en:"  11th grade", dependsOn:"m3", langOnly:"ru"},
+    {id:"m3c",cat:"milestones",ru:"  9th grade (US)",en:"  9th grade", dependsOn:"m3", langOnly:"en"},
+    {id:"m3d",cat:"milestones",ru:"  12th grade (US)",en:"  12th grade", dependsOn:"m3", langOnly:"en"},
     {id:"m4",cat:"milestones",ru:"Закончил колледж",en:"Finished college"},
     {id:"m5",cat:"milestones",ru:"Закончил университет",en:"Finished university"},
     {id:"m6",cat:"milestones",ru:"Устроился на первую работу",en:"Got first job"},
@@ -702,12 +699,17 @@
     {id:"m11",cat:"milestones",ru:"Сыграл свадьбу",en:"Got married"},
     {id:"m12",cat:"milestones",ru:"Развёлся",en:"Got divorced"},
     {id:"m13",cat:"milestones",ru:"Вышел на пенсию",en:"Retired"},
+    {id:"m14",cat:"milestones",ru:"Отслужил в армии",en:"Served in the military"},
+    {id:"m15",cat:"milestones",ru:"Побывал на войне",en:"Been to war"},
+    {id:"m16",cat:"milestones",ru:"Был исключён из школы",en:"Expelled from school"},
+    {id:"m17",cat:"milestones",ru:"Был исключён из колледжа",en:"Expelled from college"},
+    {id:"m18",cat:"milestones",ru:"Был исключён из университета",en:"Expelled from university"},
 
     // Legal
     {id:"l1",cat:"legal",ru:"Получал штраф",en:"Got a fine"},
     {id:"l2",cat:"legal",ru:"Сидел в тюрьме",en:"Been to prison"},
 
-    // Pets
+    // Pets (added new)
     {id:"pet1",cat:"pets",ru:"Завёл собаку",en:"Got a dog"},
     {id:"pet2",cat:"pets",ru:"Завёл кошку",en:"Got a cat"},
     {id:"pet3",cat:"pets",ru:"Завёл хомяка",en:"Got a hamster"},
@@ -716,6 +718,10 @@
     {id:"pet6",cat:"pets",ru:"Завёл голубя",en:"Got a pigeon"},
     {id:"pet7",cat:"pets",ru:"Завёл свинку (мини-пига)",en:"Got a mini-pig"},
     {id:"pet8",cat:"pets",ru:"Завёл утку",en:"Got a duck"},
+    {id:"pet9",cat:"pets",ru:"Завёл кролика",en:"Got a rabbit"},
+    {id:"pet10",cat:"pets",ru:"Завёл енота",en:"Got a raccoon"},
+    {id:"pet11",cat:"pets",ru:"Завёл ворону",en:"Got a crow"},
+    {id:"pet12",cat:"pets",ru:"Завёл рыбок",en:"Got fish"},
 
     // Purchases
     {id:"p1",cat:"purchases",ru:"Купил телефон",en:"Bought a phone"},
@@ -833,7 +839,7 @@
     {id:"lang28",cat:"languages",ru:"Выучил вьетнамский",en:"Learned Vietnamese"},
     {id:"lang29",cat:"languages",ru:"Выучил корейский",en:"Learned Korean"},
 
-    // Food
+    // Food (added turkey, rabbit, 100-year egg, fugu)
     {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
     {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
     {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
@@ -848,25 +854,28 @@
     {id:"f12",cat:"food",ru:"Ел бургер",en:"Eaten a burger"},
     {id:"f13",cat:"food",ru:"Ел картошку фри",en:"Eaten french fries"},
     {id:"f14",cat:"food",ru:"Ел сладкую вату",en:"Eaten cotton candy"},
-    {id:"f15",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
-    {id:"f16",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
-    {id:"f17",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
-    {id:"f18",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
-    {id:"f19",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
-    {id:"f20",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
-    {id:"f21",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
-    {id:"f22",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
-    {id:"f23",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
+    {id:"f15",cat:"food",ru:"Пробовал индейку",en:"Tried turkey"},
+    {id:"f16",cat:"food",ru:"Пробовал крольчатину",en:"Tried rabbit meat"},
+    {id:"f17",cat:"food",ru:"Пробовал 100-летнее яйцо",en:"Tried 100-year egg"},
+    {id:"f18",cat:"food",ru:"Пробовал рыбу фугу",en:"Tried fugu fish"},
+    {id:"f19",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
+    {id:"f20",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
+    {id:"f21",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
+    {id:"f22",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
+    {id:"f23",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
+    {id:"f24",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
+    {id:"f25",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
+    {id:"f26",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
+    {id:"f27",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
 
-    // Drinks
-    {id:"d1",cat:"drinks",ru:"Курил",en:"Smoked"},
-    {id:"d2",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
-    {id:"d2a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d2"},
-    {id:"d2b",cat:"drinks",ru:"  Пробовал пиво",en:"  Tried beer", dependsOn:"d2"},
-    {id:"d2c",cat:"drinks",ru:"  Пробовал вино",en:"  Tried wine", dependsOn:"d2"},
-    {id:"d2d",cat:"drinks",ru:"  Пробовал водку",en:"  Tried vodka", dependsOn:"d2"},
-    {id:"d3",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
-    {id:"d4",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
+    // Drinks (smoking moved to adult)
+    {id:"d1",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
+    {id:"d1a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d1"},
+    {id:"d1b",cat:"drinks",ru:"  Пробовал пиво",en:"  Tried beer", dependsOn:"d1"},
+    {id:"d1c",cat:"drinks",ru:"  Пробовал вино",en:"  Tried wine", dependsOn:"d1"},
+    {id:"d1d",cat:"drinks",ru:"  Пробовал водку",en:"  Tried vodka", dependsOn:"d1"},
+    {id:"d2",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
+    {id:"d3",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
 
     // Water
     {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
@@ -874,10 +883,12 @@
     {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
     {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"},
 
-    // Adult
-    {id:"a1",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
-    {id:"a2",cat:"adult",ru:"Целовался",en:"Kissed someone", adultOnly:true},
-    {id:"a3",cat:"adult",ru:"Занимался сексом",en:"Had sex", adultOnly:true},
+    // Adult (smoking moved here, added adult video)
+    {id:"a1",cat:"adult",ru:"Курил",en:"Smoked", adultOnly:true},
+    {id:"a2",cat:"adult",ru:"Смотрел видео для взрослых",en:"Watched adult videos", adultOnly:true},
+    {id:"a3",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
+    {id:"a4",cat:"adult",ru:"Целовался",en:"Kissed someone", adultOnly:true},
+    {id:"a5",cat:"adult",ru:"Занимался сексом",en:"Had sex", adultOnly:true},
 
     // Sports
     {id:"s1",cat:"sports",ru:"Играл в футбол",en:"Played football"},
@@ -890,6 +901,12 @@
     {id:"s8",cat:"sports",ru:"Нырял с аквалангом",en:"Scuba dived"},
     {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
     {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
+
+    // Events (new category)
+    {id:"ev1",cat:"events",ru:"Был на Олимпийских играх",en:"Been to the Olympic Games"},
+    {id:"ev2",cat:"events",ru:"Был на Евровидении",en:"Been to Eurovision"},
+    {id:"ev3",cat:"events",ru:"Был на Интервидении",en:"Been to Intervision"},
+    {id:"ev4",cat:"events",ru:"Был на Чемпионате Мира",en:"Been to the World Championship"},
 
     // Entertainment
     {id:"e1",cat:"entertainment",ru:"Играл в видеоигры",en:"Played video games"},
@@ -947,12 +964,12 @@
     {id:"e5",cat:"entertainment",ru:"Был в батутном центре",en:"Been to a trampoline park"}
   ];
 
-  const CAT_ORDER = ["milestones","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","entertainment"];
+  const CAT_ORDER = ["milestones","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","events","entertainment"];
   const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
   // ===== STATE =====
-  const STORAGE_KEY = "life-passport-state-v4";
+  const STORAGE_KEY = "life-passport-state-v5";
   let state = {
     lang:"ru",
     religion:"none",
@@ -1031,7 +1048,10 @@
                  .replace(/занимался/gi,"занималась")
                  .replace(/сидел/gi,"сидела")
                  .replace(/получал/gi,"получала")
-                 .replace(/закончил/gi,"закончила");
+                 .replace(/закончил/gi,"закончила")
+                 .replace(/отслужил/gi,"отслужила")
+                 .replace(/смотрел/gi,"смотрела")
+                 .replace(/исключён/gi,"исключена");
     }
     return text;
   }
@@ -1084,7 +1104,7 @@
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
     const badge = document.getElementById("versionBadge");
-    if(badge) badge.textContent = "V4";
+    if(badge) badge.textContent = "V5";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
@@ -1127,15 +1147,7 @@
 
       const body = document.createElement("div");
       body.className = "cat-body" + (state.catHidden[catKey] ? " closed" : "");
-      body.style.maxHeight = state.catHidden[catKey] ? "0" : "var(--cat-max-height)";
-
-      // Scroll hint
-      if(items.length > 10){
-        const hint = document.createElement("div");
-        hint.className = "scroll-hint";
-        hint.textContent = "↕ прокрутка";
-        body.appendChild(hint);
-      }
+      body.style.maxHeight = state.catHidden[catKey] ? "0" : "2000px";
 
       items.forEach(item=>{
         const row = document.createElement("div");
@@ -1312,7 +1324,7 @@
   // ===== Export / Import =====
   function exportData(type){
     const data = {
-      version: "V4",
+      version: "V5",
       exportDate: new Date().toISOString(),
       state: state,
       tasks: TASKS
@@ -1368,22 +1380,77 @@
   document.getElementById("exportCSV").addEventListener("click", ()=>exportData('csv'));
   document.getElementById("exportPDF").addEventListener("click", ()=>exportData('pdf'));
 
-  document.getElementById("importFile").addEventListener("change", function(e){
-    const file = e.target.files[0];
-    if(!file) return;
+  // ===== Import functions =====
+  function handleImport(file, format){
     const reader = new FileReader();
     reader.onload = function(ev){
       try{
-        const data = JSON.parse(ev.target.result);
-        if(data.state){
+        let data;
+        if(format === 'json'){
+          data = JSON.parse(ev.target.result);
+        } else if(format === 'csv'){
+          // Simple CSV parser
+          const lines = ev.target.result.split('\n');
+          const headers = lines[0].split(',');
+          const parsed = [];
+          for(let i=1; i<lines.length; i++){
+            if(!lines[i].trim()) continue;
+            const values = lines[i].split(',');
+            const obj = {};
+            headers.forEach((h, idx) => {
+              const key = h.replace(/"/g, '').trim();
+              let val = values[idx] || '';
+              val = val.replace(/"/g, '').trim();
+              obj[key] = val;
+            });
+            parsed.push(obj);
+          }
+          data = { state: { done: {}, dates: {} } };
+          parsed.forEach(row => {
+            if(row.ID && row.Done === 'Yes'){
+              data.state.done[row.ID] = true;
+              if(row.Date) data.state.dates[row.ID] = row.Date;
+            }
+          });
+        } else if(format === 'pdf'){
+          // PDF import is not supported (reading PDF is complex)
+          alert("PDF import is not supported. Please use JSON or CSV format.");
+          return;
+        }
+        if(data && data.state){
           state = Object.assign(state, data.state);
           save();
           renderAll();
           alert("Import successful!");
+        } else if(data && data.done){
+          // Handle simple format
+          state.done = data.done || {};
+          state.dates = data.dates || {};
+          save();
+          renderAll();
+          alert("Import successful!");
+        } else {
+          alert("Invalid file format");
         }
-      }catch(err){ alert("Invalid file format"); }
+      }catch(err){
+        alert("Error parsing file: " + err.message);
+      }
     };
     reader.readAsText(file);
+  }
+
+  document.getElementById("importFileJSON").addEventListener("change", function(e){
+    if(this.files[0]) handleImport(this.files[0], 'json');
+    this.value = '';
+  });
+
+  document.getElementById("importFileCSV").addEventListener("change", function(e){
+    if(this.files[0]) handleImport(this.files[0], 'csv');
+    this.value = '';
+  });
+
+  document.getElementById("importFilePDF").addEventListener("change", function(e){
+    if(this.files[0]) handleImport(this.files[0], 'pdf');
     this.value = '';
   });
 
