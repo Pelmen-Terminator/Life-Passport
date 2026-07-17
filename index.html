@@ -3,42 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport — Паспорт жизни</title>
+<title>Life Passport V2 — Паспорт жизни</title>
+<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  /* ===== THEMES ===== */
   :root{
-    --navy:#1B2A41;
-    --navy-deep:#111b29;
-    --paper:#F3ECDC;
-    --paper-line:#DED2B2;
-    --ink:#20242B;
-    --slate:#5c6570;
-    --stamp:#B23A2E;
-    --stamp-dark:#8f2d24;
-    --gold:#B8923F;
-    --gold-soft:#d9c383;
-    --radius:14px;
-    font-size:16px;
+    --bg: #F3ECDC;
+    --bg-body: #F3ECDC;
+    --text: #20242B;
+    --text-secondary: #5c6570;
+    --border: #DED2B2;
+    --card-shadow: 0 24px 50px -20px rgba(0,0,0,.35);
+    --stamp: #B23A2E;
+    --stamp-dark: #8f2d24;
+    --gold: #B8923F;
+    --gold-soft: #B8923F;
+    --stamp-bg: rgba(178,58,46,.07);
+    --input-bg: rgba(0,0,0,.05);
+    --input-border: #DED2B2;
+    --toggle-bg: #DED2B2;
+    --toggle-dot: #fff;
+    --navy: #1B2A41;
+    --radius: 14px;
+    font-size: 16px;
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  [data-theme="dark"]{
+    --bg: #1a1a2e;
+    --bg-body: #16213e;
+    --text: #e8e8e8;
+    --text-secondary: #a0a0b0;
+    --border: #2a2a4a;
+    --card-shadow: 0 24px 50px -20px rgba(0,0,0,.8);
+    --stamp: #e8494a;
+    --stamp-dark: #ff6b6b;
+    --gold: #f0c060;
+    --gold-soft: #f0c060;
+    --stamp-bg: rgba(232,73,74,.12);
+    --input-bg: rgba(255,255,255,.08);
+    --input-border: #3a3a5a;
+    --toggle-bg: #3a3a5a;
+    --toggle-dot: #f0c060;
+    --navy: #0d1b2a;
+  }
+  *{ box-sizing:border-box; }
+  html,body{margin:0;padding:0;transition: background .3s, color .3s;}
   body{
-    background:
-      radial-gradient(1200px 600px at 15% -10%, #24374f 0%, transparent 60%),
-      radial-gradient(1000px 700px at 110% 10%, #24374f 0%, transparent 55%),
-      var(--navy);
-    color:var(--paper);
+    background: var(--bg-body);
+    color: var(--text);
     font-family:'IBM Plex Sans', sans-serif;
     min-height:100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
-    padding:24px 16px 48px;
-    transition: background .3s, padding .3s;
+    padding:20px 16px 48px;
+    transition: background .3s, color .3s;
   }
-  /* size classes — applied to .wrap */
   .wrap{
     width:100%;
     max-width:760px;
@@ -51,16 +73,15 @@
   .wrap.car{ max-width:480px; }
 
   .cover{
-    position:relative;
     text-align:center;
-    padding:4px 8px 20px;
+    padding:4px 8px 16px;
   }
   .eyebrow{
     font-family:'IBM Plex Mono', monospace;
     letter-spacing:.28em;
     text-transform:uppercase;
     font-size:.68rem;
-    color:var(--gold-soft);
+    color: var(--gold-soft);
     margin:0 0 10px;
   }
   h1{
@@ -70,10 +91,11 @@
     line-height:1.05;
     margin:0 0 8px;
     letter-spacing:-.01em;
+    color: var(--text);
   }
   .sub{
     font-size:.95rem;
-    color:#c9d2de;
+    color: var(--text-secondary);
     max-width:480px;
     margin:0 auto;
     line-height:1.5;
@@ -85,18 +107,18 @@
     gap:10px 12px;
     align-items:center;
     justify-content:center;
-    margin:20px 0 4px;
+    margin:16px 0 4px;
   }
   .controls{
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
+    gap:8px;
     justify-content:center;
   }
   .pillgroup{
     display:inline-flex;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.14);
+    background: var(--input-bg);
+    border:1px solid var(--input-border);
     border-radius:999px;
     padding:3px;
   }
@@ -106,8 +128,8 @@
     letter-spacing:.04em;
     border:none;
     background:transparent;
-    color:#c9d2de;
-    padding:7px 16px;
+    color: var(--text-secondary);
+    padding:6px 14px;
     border-radius:999px;
     cursor:pointer;
     transition:background .2s, color .2s;
@@ -117,37 +139,99 @@
     color:#1c1608;
     font-weight:600;
   }
-  select.religion, select.screen-size{
+  select.religion, select.gender{
     font-family:'IBM Plex Sans', sans-serif;
     font-size:.85rem;
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(255,255,255,.14);
-    color:var(--paper);
-    padding:8px 14px;
+    background: var(--input-bg);
+    border:1px solid var(--input-border);
+    color: var(--text);
+    padding:7px 14px;
     border-radius:999px;
     cursor:pointer;
     appearance:none;
     -webkit-appearance:none;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0 L5 6 L10 0' fill='none' stroke='%23d9c383' stroke-width='1.4'/></svg>");
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0 L5 6 L10 0' fill='none' stroke='%23b8923f' stroke-width='1.4'/></svg>");
     background-repeat:no-repeat;
     background-position:right 14px center;
     padding-right:32px;
   }
-  select.religion option, select.screen-size option{ color:#111; }
+  select option{ background: var(--bg-body); color: var(--text); }
+
+  .settings-toggle{
+    background: var(--input-bg);
+    border:1px solid var(--input-border);
+    border-radius:999px;
+    padding:7px 16px;
+    color: var(--text);
+    font-size:.85rem;
+    cursor:pointer;
+    font-family:'IBM Plex Sans', sans-serif;
+    transition: background .2s;
+  }
+  .settings-toggle:hover{ background: var(--gold); color:#1c1608; }
+
+  .settings-panel{
+    background: var(--bg);
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    padding:16px 20px;
+    margin:10px 0 0;
+    display:none;
+    grid-template-columns: 1fr 1fr;
+    gap:12px 20px;
+    box-shadow: var(--card-shadow);
+  }
+  .settings-panel.open{ display:grid; }
+  .settings-panel label{
+    font-size:.85rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+  }
+  .settings-panel select{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:.85rem;
+    background: var(--input-bg);
+    border:1px solid var(--input-border);
+    color: var(--text);
+    padding:5px 12px;
+    border-radius:999px;
+    cursor:pointer;
+    flex:1;
+  }
+  /* toggle switch */
+  .switch{ position:relative; width:40px; height:22px; flex:0 0 40px; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .slider{
+    position:absolute; inset:0;
+    background: var(--toggle-bg);
+    border-radius:999px;
+    cursor:pointer;
+    transition:.3s;
+  }
+  .slider::before{
+    content:""; position:absolute; height:16px; width:16px; left:3px; bottom:3px;
+    background: var(--toggle-dot);
+    border-radius:50%;
+    transition:.3s;
+  }
+  .switch input:checked + .slider{ background: var(--gold); }
+  .switch input:checked + .slider::before{ transform:translateX(18px); }
 
   .note{
     text-align:center;
     font-size:.74rem;
-    color:#8f9bab;
+    color: var(--text-secondary);
     max-width:460px;
-    margin:10px auto 0;
+    margin:8px auto 0;
     line-height:1.5;
   }
 
   .badge-row{
     display:flex;
     justify-content:center;
-    margin:18px 0 26px;
+    margin:16px 0 22px;
   }
   .badge{
     font-family:'IBM Plex Mono', monospace;
@@ -157,13 +241,13 @@
     border:1px solid var(--gold);
     border-radius:999px;
     padding:6px 10px 6px 18px;
-    background:rgba(184,146,63,.08);
+    background: var(--stamp-bg);
     flex-wrap:wrap;
   }
-  .badge .count{ font-size:.95rem; letter-spacing:.03em; color:var(--gold-soft); }
+  .badge .count{ font-size:.95rem; letter-spacing:.03em; color: var(--gold-soft); }
   .badge .bar{
     width:120px; height:6px; border-radius:999px;
-    background:rgba(255,255,255,.12);
+    background: rgba(255,255,255,.15);
     overflow:hidden;
   }
   .badge .bar > span{
@@ -173,66 +257,101 @@
   .badge .reset{
     font-family:'IBM Plex Mono', monospace;
     font-size:.68rem;
-    color:#c9d2de;
-    background:none; border:1px solid rgba(255,255,255,.2);
+    color: var(--text-secondary);
+    background:none; border:1px solid var(--border);
     border-radius:999px; padding:4px 11px; cursor:pointer;
     letter-spacing:.03em;
+    transition: border .2s, color .2s;
   }
   .badge .reset:hover{ border-color:var(--stamp); color:var(--stamp); }
+  .badge .export-btn{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    color: var(--text-secondary);
+    background:none; border:1px solid var(--border);
+    border-radius:999px; padding:4px 11px; cursor:pointer;
+    letter-spacing:.03em;
+    transition: border .2s, color .2s;
+  }
+  .badge .export-btn:hover{ border-color:var(--gold); color:var(--gold); }
 
   .page{
-    background:
-      repeating-linear-gradient(0deg, rgba(0,0,0,.015) 0 2px, transparent 2px 4px),
-      var(--paper);
-    color:var(--ink);
+    background: var(--bg);
+    color: var(--text);
     border-radius:var(--radius);
     padding:6px 0 18px;
-    box-shadow:0 24px 50px -20px rgba(0,0,0,.55), 0 2px 0 rgba(0,0,0,.05);
+    box-shadow: var(--card-shadow);
     position:relative;
     overflow:hidden;
+    transition: background .3s, color .3s;
   }
   .page::before{
-    content:"";
-    position:absolute; inset:0;
+    content:""; position:absolute; inset:0;
     border-radius:var(--radius);
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
     pointer-events:none;
   }
 
-  .category{ padding:20px 24px 2px; }
-  .category + .category{
-    border-top:1px dashed var(--paper-line);
-    margin-top:4px;
+  .category{
+    padding:16px 20px 2px;
+    transition: opacity .3s;
   }
+  .category.hidden{ display:none; }
+  .category + .category{
+    border-top:1px dashed var(--border);
+    margin-top:2px;
+  }
+  .cat-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .cat-header:hover .cat-label{ color: var(--stamp-dark); }
   .cat-label{
     font-family:'IBM Plex Mono', monospace;
     font-size:.68rem;
     letter-spacing:.22em;
     text-transform:uppercase;
-    color:var(--gold);
-    display:flex; align-items:center; gap:10px;
-    margin-bottom:8px;
+    color: var(--gold);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:1;
+    transition: color .2s;
   }
   .cat-label::after{
-    content:""; flex:1; height:1px; background:var(--paper-line);
+    content:""; flex:1; height:1px; background:var(--border);
   }
+  .cat-toggle{
+    font-size:1.2rem;
+    color: var(--text-secondary);
+    transition: transform .3s;
+  }
+  .cat-toggle.closed{ transform:rotate(-90deg); }
+  .cat-body{ transition: max-height .3s ease, opacity .3s; overflow:hidden; }
+  .cat-body.closed{ max-height:0 !important; opacity:0; padding-top:0; }
 
   .task{
     display:flex;
     align-items:center;
     gap:14px;
-    padding:8px 2px;
+    padding:7px 2px;
     cursor:pointer;
     user-select:none;
+    transition: opacity .2s;
   }
-  .task:hover .label{ color:var(--stamp-dark); }
+  .task.disabled{ opacity:.4; pointer-events:none; }
+  .task:hover .label{ color: var(--stamp-dark); }
 
   .stampbox{
     position:relative;
     width:34px; height:34px;
     flex:0 0 34px;
     border-radius:50%;
-    border:1.6px solid var(--slate);
+    border:1.6px solid var(--text-secondary);
     display:flex; align-items:center; justify-content:center;
     transition:border-color .2s;
   }
@@ -247,7 +366,7 @@
     transform:scale(1.6) rotate(-18deg);
     transition:opacity .18s ease, transform .28s cubic-bezier(.2,1.4,.4,1);
     color:var(--stamp);
-    background:rgba(178,58,46,.07);
+    background: var(--stamp-bg);
   }
   .stampmark svg{ width:20px; height:20px; }
   .task.done .stampmark{ opacity:1; transform:scale(1) rotate(-10deg); }
@@ -255,39 +374,104 @@
   .label{
     font-size:.98rem;
     line-height:1.35;
-    color:var(--ink);
+    color: var(--text);
     transition:color .2s;
+    flex:1;
   }
   .task.done .label{
-    color:var(--slate);
+    color: var(--text-secondary);
     text-decoration:line-through;
     text-decoration-color:var(--stamp);
     text-decoration-thickness:1.5px;
   }
 
+  .task-date{
+    font-size:.7rem;
+    color: var(--text-secondary);
+    background: var(--input-bg);
+    border:1px solid var(--input-border);
+    border-radius:999px;
+    padding:2px 10px;
+    font-family:'IBM Plex Mono', monospace;
+    cursor:pointer;
+    flex:0 0 auto;
+    min-width:90px;
+    text-align:center;
+    transition: background .2s;
+  }
+  .task-date:hover{ background: var(--gold); color:#1c1608; }
+  .task-date input{
+    background:transparent;
+    border:none;
+    color: var(--text);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.7rem;
+    width:100%;
+    text-align:center;
+    cursor:pointer;
+  }
+  .task-date input:focus{ outline:none; }
+
   .empty-cat{
     font-size:.85rem;
-    color:var(--slate);
+    color: var(--text-secondary);
     padding:6px 2px 14px;
     font-style:italic;
   }
 
+  .import-area{
+    margin-top:12px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .import-area input[type="file"]{ display:none; }
+  .import-area label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:.68rem;
+    color: var(--text-secondary);
+    background:var(--input-bg);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:4px 14px;
+    cursor:pointer;
+    transition: border .2s, color .2s;
+  }
+  .import-area label:hover{ border-color:var(--gold); color:var(--gold); }
+
   footer{
     text-align:center;
-    margin-top:34px;
+    margin-top:30px;
     font-size:.72rem;
-    color:#7f8ba0;
+    color: var(--text-secondary);
     line-height:1.6;
   }
-  footer a{ color:var(--gold-soft); }
 
-  @media (prefers-reduced-motion: reduce){
-    .stampmark{ transition:none; }
+  /* offline indicator */
+  .offline-badge{
+    display:inline-block;
+    background: var(--stamp);
+    color:#fff;
+    font-size:.6rem;
+    padding:2px 10px;
+    border-radius:999px;
+    letter-spacing:.1em;
+    margin-left:8px;
   }
+
   @media (max-width:600px){
-    .category{ padding:16px 16px 2px; }
+    .category{ padding:12px 14px 2px; }
     .task{ gap:10px; }
     .badge .bar{ width:80px; }
+    .settings-panel{ grid-template-columns:1fr; }
+    .task-date{ min-width:70px; font-size:.65rem; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .stampmark{ transition:none; }
+    .cat-body{ transition:none; }
+    .slider{ transition:none; }
+    .slider::before{ transition:none; }
   }
 </style>
 </head>
@@ -296,8 +480,8 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни</h1>
-    <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Список подстраивается под язык, религиозные ограничения и размер экрана.</p>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V2</span></h1>
+    <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
   <div class="top-bar">
@@ -307,10 +491,47 @@
         <button data-lang="en">EN</button>
       </div>
       <select class="religion" id="religionSelect"></select>
-      <select class="screen-size" id="screenSizeSelect"></select>
+      <select class="gender" id="genderSelect"></select>
+      <button class="settings-toggle" id="settingsToggle">⚙️</button>
     </div>
   </div>
-  <p class="note" data-i18n="religionNote">Фильтр по религии скрывает пункты, связанные с пищевыми запретами. Это общий ориентир.</p>
+
+  <div class="settings-panel" id="settingsPanel">
+    <label>
+      <span data-i18n="theme">Тема</span>
+      <select id="themeSelect">
+        <option value="light">☀️ Light</option>
+        <option value="dark">🌙 Dark</option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="screenSize">Размер экрана</span>
+      <select id="screenSizeSelect">
+        <option value="phone">📱 Телефон</option>
+        <option value="tablet">📟 Планшет</option>
+        <option value="computer" selected>💻 Компьютер</option>
+        <option value="tv">📺 Телевизор</option>
+        <option value="car">🚗 Авто</option>
+      </select>
+    </label>
+    <label>
+      <span data-i18n="offlineMode">Офлайн-режим</span>
+      <div class="switch">
+        <input type="checkbox" id="offlineToggle">
+        <span class="slider"></span>
+      </div>
+    </label>
+    <div class="import-area">
+      <span data-i18n="importExport">Импорт / Экспорт</span>
+      <label for="importFile">📥 Import JSON</label>
+      <input type="file" id="importFile" accept=".json">
+      <button class="export-btn" id="exportJSON">📤 JSON</button>
+      <button class="export-btn" id="exportCSV">📊 CSV</button>
+      <button class="export-btn" id="exportPDF">📄 PDF</button>
+    </div>
+  </div>
+
+  <p class="note" data-i18n="religionNote">Фильтры скрывают пункты с пищевыми ограничениями. Общий ориентир.</p>
 
   <div class="badge-row">
     <div class="badge">
@@ -323,37 +544,30 @@
   <div class="page" id="page"></div>
 
   <footer>
-    <span data-i18n="footer">Данные сохраняются в localStorage — даже после закрытия страницы.</span>
+    <span data-i18n="footer">Данные сохраняются в localStorage.</span>
+    <span id="offlineStatus"></span>
   </footer>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 (function(){
-  // ---------- i18n ----------
+  // ===== STRINGS =====
   const STR = {
     ru:{
       eyebrow:"ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ",
       title:"Паспорт жизни",
-      subtitle:"Отмечайте то, что уже случилось. Список подстраивается под язык, религиозные ограничения и размер экрана.",
-      religionNote:"Фильтр по религии скрывает пункты, связанные с пищевыми запретами. Это общий ориентир.",
+      subtitle:"Отмечайте то, что уже случилось. Настраивайте под себя.",
+      religionNote:"Фильтры скрывают пункты с пищевыми ограничениями. Общий ориентир.",
       reset:"СБРОС",
-      footer:"Данные сохраняются в localStorage — даже после закрытия страницы.",
-      resetConfirm:"Сбросить весь прогресс? Это действие нельзя отменить.",
-      screenSizes:{
-        phone:"Телефон",
-        tablet:"Планшет",
-        computer:"Компьютер",
-        tv:"Телевизор",
-        car:"Авто"
-      },
-      religions:{
-        none:"Без фильтра",
-        christianity:"Христианство",
-        islam:"Ислам",
-        buddhism:"Буддизм",
-        hinduism:"Индуизм",
-        judaism:"Иудаизм"
-      },
+      footer:"Данные сохраняются в localStorage.",
+      resetConfirm:"Сбросить весь прогресс? Это нельзя отменить.",
+      theme:"Тема",
+      screenSize:"Размер экрана",
+      offlineMode:"Офлайн-режим",
+      importExport:"Импорт / Экспорт",
+      genders:{male:"Мужской", female:"Женский"},
+      religions:{none:"Без фильтра", christianity:"Христианство", islam:"Ислам", buddhism:"Буддизм", hinduism:"Индуизм", judaism:"Иудаизм"},
       cats:{
         milestones:"Жизненные вехи",
         transport:"Транспорт",
@@ -361,32 +575,27 @@
         purchases:"Покупки",
         languages:"Языки",
         food:"Еда",
-        meat:"Мясо и морепродукты"
+        meat:"Мясо и морепродукты",
+        pets:"Питомцы",
+        sports:"Спорт",
+        drinks:"Напитки",
+        water:"Водоёмы"
       }
     },
     en:{
       eyebrow:"A PERSONAL LIFE CHECKLIST",
       title:"Life Passport",
-      subtitle:"Check off the things you've already experienced. The list adapts to language, religious dietary restrictions and screen size.",
-      religionNote:"Religion filter hides items tied to dietary restrictions. General guide only.",
+      subtitle:"Check off what you've already experienced. Customize it.",
+      religionNote:"Filters hide items tied to dietary restrictions. General guide only.",
       reset:"RESET",
-      footer:"Data is saved in localStorage — persists even after you close the page.",
+      footer:"Data is saved in localStorage.",
       resetConfirm:"Reset all progress? This cannot be undone.",
-      screenSizes:{
-        phone:"Phone",
-        tablet:"Tablet",
-        computer:"Computer",
-        tv:"TV",
-        car:"Car"
-      },
-      religions:{
-        none:"No filter",
-        christianity:"Christianity",
-        islam:"Islam",
-        buddhism:"Buddhism",
-        hinduism:"Hinduism",
-        judaism:"Judaism"
-      },
+      theme:"Theme",
+      screenSize:"Screen Size",
+      offlineMode:"Offline Mode",
+      importExport:"Import / Export",
+      genders:{male:"Male", female:"Female"},
+      religions:{none:"No filter", christianity:"Christianity", islam:"Islam", buddhism:"Buddhism", hinduism:"Hinduism", judaism:"Judaism"},
       cats:{
         milestones:"Life Milestones",
         transport:"Transportation",
@@ -394,44 +603,103 @@
         purchases:"Purchases",
         languages:"Languages",
         food:"Food",
-        meat:"Meat & Seafood"
+        meat:"Meat & Seafood",
+        pets:"Pets",
+        sports:"Sports",
+        drinks:"Drinks",
+        water:"Bodies of Water"
       }
     }
   };
 
-  // ---------- TASKS (added Huawei, Nokia, Redmi, Samsung) ----------
+  // ===== TASKS with dependencies =====
   const TASKS = [
-    // milestones
-    {id:"m1",cat:"milestones",ru:"Закончил детский сад",en:"Finished kindergarten"},
-    {id:"m2",cat:"milestones",ru:"Закончил школу",en:"Finished school"},
-    {id:"m3",cat:"milestones",ru:"Закончил колледж",en:"Finished college"},
-    {id:"m4",cat:"milestones",ru:"Закончил университет",en:"Finished university"},
-    // transport
+    // Milestones
+    {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
+    {id:"m2",cat:"milestones",ru:"Получил водительские права",en:"Got a driver's license"},
+    {id:"m3",cat:"milestones",ru:"Устроился на первую работу",en:"Got first job"},
+    {id:"m4",cat:"milestones",ru:"Сменил профессию",en:"Changed career"},
+    {id:"m5",cat:"milestones",ru:"Переехал в другой город",en:"Moved to another city"},
+    {id:"m6",cat:"milestones",ru:"Переехал в другую страну",en:"Moved to another country"},
+    {id:"m7",cat:"milestones",ru:"Стал родителем",en:"Became a parent"},
+    {id:"m8",cat:"milestones",ru:"Сыграл свадьбу",en:"Got married"},
+    {id:"m9",cat:"milestones",ru:"Развёлся",en:"Got divorced"},
+    {id:"m10",cat:"milestones",ru:"Вышел на пенсию",en:"Retired"},
+
+    // Pets (conditional: show after "Стал родителем" for pets? no, separate)
+    {id:"pet1",cat:"pets",ru:"Завёл собаку",en:"Got a dog"},
+    {id:"pet2",cat:"pets",ru:"Завёл кошку",en:"Got a cat"},
+    {id:"pet3",cat:"pets",ru:"Завёл хомяка",en:"Got a hamster"},
+    {id:"pet4",cat:"pets",ru:"Завёл змею",en:"Got a snake"},
+    {id:"pet5",cat:"pets",ru:"Завёл попугая",en:"Got a parrot"},
+    {id:"pet6",cat:"pets",ru:"Завёл голубя",en:"Got a pigeon"},
+    {id:"pet7",cat:"pets",ru:"Завёл свинку (мини-пига)",en:"Got a mini-pig"},
+    {id:"pet8",cat:"pets",ru:"Завёл утку",en:"Got a duck"},
+
+    // Purchases with dependencies
+    {id:"p1",cat:"purchases",ru:"Купил телефон",en:"Bought a phone"},
+    {id:"p1a",cat:"purchases",ru:"  iPhone",en:"  iPhone", dependsOn:"p1"},
+    {id:"p1b",cat:"purchases",ru:"  Samsung",en:"  Samsung", dependsOn:"p1"},
+    {id:"p1c",cat:"purchases",ru:"  Huawei",en:"  Huawei", dependsOn:"p1"},
+    {id:"p1d",cat:"purchases",ru:"  Xiaomi",en:"  Xiaomi", dependsOn:"p1"},
+    {id:"p1e",cat:"purchases",ru:"  Realme",en:"  Realme", dependsOn:"p1"},
+    {id:"p1f",cat:"purchases",ru:"  Nokia",en:"  Nokia", dependsOn:"p1"},
+    {id:"p1g",cat:"purchases",ru:"  Redmi",en:"  Redmi", dependsOn:"p1"},
+    {id:"p2",cat:"purchases",ru:"Купил планшет",en:"Bought a tablet"},
+    {id:"p2a",cat:"purchases",ru:"  iPad",en:"  iPad", dependsOn:"p2"},
+    {id:"p2b",cat:"purchases",ru:"  Samsung",en:"  Samsung", dependsOn:"p2"},
+    {id:"p2c",cat:"purchases",ru:"  Microsoft",en:"  Microsoft", dependsOn:"p2"},
+    {id:"p2d",cat:"purchases",ru:"  Huawei",en:"  Huawei", dependsOn:"p2"},
+    {id:"p2e",cat:"purchases",ru:"  Xiaomi",en:"  Xiaomi", dependsOn:"p2"},
+    {id:"p2f",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p2"},
+    {id:"p3",cat:"purchases",ru:"Купил ноутбук",en:"Bought a laptop"},
+    {id:"p3a",cat:"purchases",ru:"  Apple",en:"  Apple", dependsOn:"p3"},
+    {id:"p3b",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p3"},
+    {id:"p3c",cat:"purchases",ru:"  HP",en:"  HP", dependsOn:"p3"},
+    {id:"p3d",cat:"purchases",ru:"  Dell",en:"  Dell", dependsOn:"p3"},
+    {id:"p3e",cat:"purchases",ru:"  Asus",en:"  Asus", dependsOn:"p3"},
+    {id:"p3f",cat:"purchases",ru:"  Acer",en:"  Acer", dependsOn:"p3"},
+    {id:"p4",cat:"purchases",ru:"Купил компьютер",en:"Bought a desktop"},
+    {id:"p4a",cat:"purchases",ru:"  Apple Mac",en:"  Apple Mac", dependsOn:"p4"},
+    {id:"p4b",cat:"purchases",ru:"  Dell",en:"  Dell", dependsOn:"p4"},
+    {id:"p4c",cat:"purchases",ru:"  HP",en:"  HP", dependsOn:"p4"},
+    {id:"p4d",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p4"},
+    {id:"p5",cat:"purchases",ru:"Купил автомобиль",en:"Bought a car"},
+    {id:"p6",cat:"purchases",ru:"Купил квартиру",en:"Bought an apartment"},
+    {id:"p7",cat:"purchases",ru:"Купил дом",en:"Bought a house"},
+    {id:"p8",cat:"purchases",ru:"Купил самолёт",en:"Bought a plane"},
+
+    // Travel (RU-specific)
+    {id:"tr1",cat:"travel",ru:"Был в Сочи",en:"Been to Sochi", langOnly:"ru"},
+    {id:"tr2",cat:"travel",ru:"Был в Крыму",en:"Been to Crimea", langOnly:"ru"},
+    {id:"tr3",cat:"travel",ru:"Был в Архипо-Осиповке",en:"Been to Arkhipo-Osipovka", langOnly:"ru"},
+    {id:"tr4",cat:"travel",ru:"Был на Байкале",en:"Been to Baikal", langOnly:"ru"},
+    {id:"tr5",cat:"travel",ru:"Был в Карелии",en:"Been to Karelia", langOnly:"ru"},
+    {id:"tr6",cat:"travel",ru:"Был на Алтае",en:"Been to Altai", langOnly:"ru"},
+    {id:"tr7",cat:"travel",ru:"Был во Владивостоке",en:"Been to Vladivostok", langOnly:"ru"},
+    // Travel (EN-specific)
+    {id:"tr8",cat:"travel",ru:"Был в Сан-Франциско",en:"Been to San Francisco", langOnly:"en"},
+    {id:"tr9",cat:"travel",ru:"Был в Оттаве",en:"Been to Ottawa", langOnly:"en"},
+    {id:"tr10",cat:"travel",ru:"Был в Лос-Анджелесе",en:"Been to Los Angeles", langOnly:"en"},
+    {id:"tr11",cat:"travel",ru:"Был в Ванкувере",en:"Been to Vancouver", langOnly:"en"},
+    // Travel (all)
+    {id:"tr12",cat:"travel",ru:"Был в Европе",en:"Been to Europe"},
+    {id:"tr13",cat:"travel",ru:"Был в Азии",en:"Been to Asia"},
+    {id:"tr14",cat:"travel",ru:"Был в Океании",en:"Been to Oceania"},
+    {id:"tr15",cat:"travel",ru:"Был в Австралии",en:"Been to Australia"},
+    {id:"tr16",cat:"travel",ru:"Был в Африке",en:"Been to Africa"},
+    {id:"tr17",cat:"travel",ru:"Был в Северной Америке",en:"Been to North America"},
+    {id:"tr18",cat:"travel",ru:"Был в Южной Америке",en:"Been to South America"},
+
+    // Transport
     {id:"t1",cat:"transport",ru:"Летал на самолёте",en:"Flown on a plane"},
     {id:"t2",cat:"transport",ru:"Летал на вертолёте",en:"Flown on a helicopter"},
     {id:"t3",cat:"transport",ru:"Плавал на лайнере",en:"Sailed on a cruise liner"},
     {id:"t4",cat:"transport",ru:"Плавал на катере",en:"Ridden a speedboat"},
     {id:"t5",cat:"transport",ru:"Ездил в автомобиле",en:"Ridden in a car"},
     {id:"t6",cat:"transport",ru:"Ездил в поезде",en:"Ridden a train"},
-    // travel
-    {id:"tr1",cat:"travel",ru:"Был в другой стране",en:"Visited another country"},
-    {id:"tr2",cat:"travel",ru:"Был в Москве",en:"Been to Moscow", langOnly:"ru"},
-    {id:"tr3",cat:"travel",ru:"Был в Санкт-Петербурге",en:"Been to Saint Petersburg", langOnly:"ru"},
-    {id:"tr4",cat:"travel",ru:"Был в Казани",en:"Been to Kazan", langOnly:"ru"},
-    {id:"tr5",cat:"travel",ru:"Был в Лондоне",en:"Been to London", langOnly:"en"},
-    {id:"tr6",cat:"travel",ru:"Был в Вашингтоне",en:"Been to Washington, D.C.", langOnly:"en"},
-    {id:"tr7",cat:"travel",ru:"Был в Нью-Йорке",en:"Been to New York", langOnly:"en"},
-    // purchases (added 4 phone brands)
-    {id:"p1",cat:"purchases",ru:"Купил iPhone",en:"Bought an iPhone"},
-    {id:"p2",cat:"purchases",ru:"Купил автомобиль",en:"Bought a car"},
-    {id:"p3",cat:"purchases",ru:"Купил квартиру",en:"Bought an apartment"},
-    {id:"p4",cat:"purchases",ru:"Купил дом",en:"Bought a house"},
-    {id:"p5",cat:"purchases",ru:"Купил самолёт",en:"Bought a plane"},
-    {id:"p6",cat:"purchases",ru:"Купил Huawei",en:"Bought a Huawei"},
-    {id:"p7",cat:"purchases",ru:"Купил Nokia",en:"Bought a Nokia"},
-    {id:"p8",cat:"purchases",ru:"Купил Redmi",en:"Bought a Redmi"},
-    {id:"p9",cat:"purchases",ru:"Купил Samsung",en:"Bought a Samsung"},
-    // languages
+
+    // Languages
     {id:"l1",cat:"languages",ru:"Выучил русский",en:"Learned Russian"},
     {id:"l2",cat:"languages",ru:"Выучил английский",en:"Learned English"},
     {id:"l3",cat:"languages",ru:"Выучил испанский",en:"Learned Spanish"},
@@ -442,17 +710,20 @@
     {id:"l8",cat:"languages",ru:"Выучил португальский",en:"Learned Portuguese"},
     {id:"l9",cat:"languages",ru:"Выучил итальянский",en:"Learned Italian"},
     {id:"l10",cat:"languages",ru:"Выучил китайский",en:"Learned Chinese"},
-    {id:"l11",cat:"languages",ru:"Выучил татарский",en:"Learned Tatar", langOnly:"ru"},
-    {id:"l12",cat:"languages",ru:"Выучил башкирский",en:"Learned Bashkir", langOnly:"ru"},
-    {id:"l13",cat:"languages",ru:"Выучил чеченский",en:"Learned Chechen", langOnly:"ru"},
-    // food
-    {id:"f1",cat:"food",ru:"Ел суши",en:"Eaten sushi"},
-    {id:"f2",cat:"food",ru:"Ел пиццу",en:"Eaten pizza"},
-    {id:"f3",cat:"food",ru:"Ел чёрную икру",en:"Eaten black caviar"},
-    {id:"f4",cat:"food",ru:"Ел белую икру",en:"Eaten white caviar"},
-    {id:"f5",cat:"food",ru:"Ел экзотические фрукты",en:"Eaten exotic fruits"},
-    {id:"f6",cat:"food",ru:"Ловил рыбу",en:"Gone fishing"},
-    // meat
+
+    // Food
+    {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
+    {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
+    {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
+    {id:"f4",cat:"food",ru:"Пробовал страусятину",en:"Tried ostrich meat"},
+    {id:"f5",cat:"food",ru:"Пробовал крокодила",en:"Tried crocodile"},
+    {id:"f6",cat:"food",ru:"Ел суши",en:"Eaten sushi"},
+    {id:"f7",cat:"food",ru:"Ел пиццу",en:"Eaten pizza"},
+    {id:"f8",cat:"food",ru:"Ел чёрную икру",en:"Eaten black caviar"},
+    {id:"f9",cat:"food",ru:"Ел экзотические фрукты",en:"Eaten exotic fruits"},
+    {id:"f10",cat:"food",ru:"Ловил рыбу",en:"Gone fishing"},
+
+    // Meat
     {id:"mt1",cat:"meat",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
     {id:"mt2",cat:"meat",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
     {id:"mt3",cat:"meat",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
@@ -462,22 +733,49 @@
     {id:"mt7",cat:"meat",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
     {id:"mt8",cat:"meat",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
     {id:"mt9",cat:"meat",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
+
+    // Sports
+    {id:"s1",cat:"sports",ru:"Играл в футбол",en:"Played football"},
+    {id:"s2",cat:"sports",ru:"Играл в хоккей",en:"Played hockey"},
+    {id:"s3",cat:"sports",ru:"Играл в теннис",en:"Played tennis"},
+    {id:"s4",cat:"sports",ru:"Играл в баскетбол",en:"Played basketball"},
+    {id:"s5",cat:"sports",ru:"Играл в волейбол",en:"Played volleyball"},
+    {id:"s6",cat:"sports",ru:"Бегал марафон",en:"Ran a marathon"},
+    {id:"s7",cat:"sports",ru:"Прыгал с парашютом",en:"Skydived"},
+    {id:"s8",cat:"sports",ru:"Нырял с аквалангом",en:"Scuba dived"},
+    {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
+    {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
+
+    // Drinks
+    {id:"d1",cat:"drinks",ru:"Курил",en:"Smoked"},
+    {id:"d2",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
+    {id:"d3",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
+    {id:"d4",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
+
+    // Water bodies
+    {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
+    {id:"w2",cat:"water",ru:"Был на речке",en:"Been to a river"},
+    {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
+    {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"}
   ];
 
-  const CAT_ORDER = ["milestones","transport","travel","purchases","languages","food","meat"];
-  const RELIGION_HIDE = {
-    none:[],
-    christianity:[],
-    islam:["pork"],
-    judaism:["pork","shellfish","horse"],
-    hinduism:["beef"],
-    buddhism:["meat"]
-  };
+  const CAT_ORDER = ["milestones","pets","purchases","travel","transport","languages","food","meat","sports","drinks","water"];
+  const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
-  // ---------- state ----------
+  // ===== STATE =====
   const STORAGE_KEY = "life-passport-state-v2";
-  let state = {lang:"ru", religion:"none", screenSize:"computer", done:{}};
+  let state = {
+    lang:"ru",
+    religion:"none",
+    gender:"male",
+    theme:"light",
+    screenSize:"computer",
+    offline:false,
+    done:{},
+    dates:{},
+    catHidden:{}
+  };
   try{
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
     if(saved) state = Object.assign(state, saved);
@@ -487,25 +785,64 @@
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
   }
 
-  // ---------- DOM refs ----------
+  // ===== DOM refs =====
   const wrapEl = document.getElementById("wrap");
   const pageEl = document.getElementById("page");
   const countEl = document.getElementById("countText");
   const barEl = document.getElementById("barFill");
   const religionSelect = document.getElementById("religionSelect");
+  const genderSelect = document.getElementById("genderSelect");
+  const themeSelect = document.getElementById("themeSelect");
   const screenSizeSelect = document.getElementById("screenSizeSelect");
+  const offlineToggle = document.getElementById("offlineToggle");
+  const settingsPanel = document.getElementById("settingsPanel");
+  const settingsToggle = document.getElementById("settingsToggle");
 
-  // ---------- helpers ----------
+  // ===== Helpers =====
+  function getText(key){ return STR[state.lang][key] || key; }
+
   function visibleTasks(){
     const hide = RELIGION_HIDE[state.religion] || [];
     return TASKS.filter(t=>{
       if(t.langOnly && t.langOnly !== state.lang) return false;
       if(t.tags && t.tags.some(tag => hide.includes(tag))) return false;
+      // dependencies: show only if parent is done
+      if(t.dependsOn && !state.done[t.dependsOn]) return false;
       return true;
     });
   }
 
-  // ---------- render ----------
+  function getPronoun(text){
+    if(state.gender === "female"){
+      return text.replace(/получил/gi,"получила")
+                 .replace(/купил/gi,"купила")
+                 .replace(/завёл/gi,"завела")
+                 .replace(/сменил/gi,"сменила")
+                 .replace(/переехал/gi,"переехала")
+                 .replace(/стал/gi,"стала")
+                 .replace(/сыграл/gi,"сыграла")
+                 .replace(/развёлся/gi,"развелась")
+                 .replace(/вышел/gi,"вышла")
+                 .replace(/ездил/gi,"ездила")
+                 .replace(/летал/gi,"летала")
+                 .replace(/плавал/gi,"плавала")
+                 .replace(/выучил/gi,"выучила")
+                 .replace(/пробовал/gi,"пробовала")
+                 .replace(/ел/gi,"ела")
+                 .replace(/ловил/gi,"ловила")
+                 .replace(/играл/gi,"играла")
+                 .replace(/бегал/gi,"бегала")
+                 .replace(/прыгал/gi,"прыгала")
+                 .replace(/нырял/gi,"ныряла")
+                 .replace(/катался/gi,"каталась")
+                 .replace(/курил/gi,"курила")
+                 .replace(/пил/gi,"пила")
+                 .replace(/был/gi,"была");
+    }
+    return text;
+  }
+
+  // ===== Render =====
   function renderReligionOptions(){
     const t = STR[state.lang].religions;
     religionSelect.innerHTML = "";
@@ -518,15 +855,15 @@
     });
   }
 
-  function renderScreenSizeOptions(){
-    const t = STR[state.lang].screenSizes;
-    screenSizeSelect.innerHTML = "";
-    SCREEN_SIZES.forEach(key=>{
+  function renderGenderOptions(){
+    const t = STR[state.lang].genders;
+    genderSelect.innerHTML = "";
+    ["male","female"].forEach(key=>{
       const opt = document.createElement("option");
       opt.value = key;
-      opt.textContent = t[key] || key;
-      if(key === state.screenSize) opt.selected = true;
-      screenSizeSelect.appendChild(opt);
+      opt.textContent = t[key];
+      if(key === state.gender) opt.selected = true;
+      genderSelect.appendChild(opt);
     });
   }
 
@@ -540,12 +877,12 @@
     document.querySelectorAll("#langGroup button").forEach(b=>{
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
+    document.getElementById("versionBadge").textContent = "V2";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
 
   function renderTasks(){
-    const t = STR[state.lang];
     const tasks = visibleTasks();
     pageEl.innerHTML = "";
 
@@ -554,17 +891,36 @@
       if(items.length === 0) return;
 
       const catEl = document.createElement("div");
-      catEl.className = "category";
+      catEl.className = "category" + (state.catHidden[catKey] ? " hidden" : "");
+
+      const header = document.createElement("div");
+      header.className = "cat-header";
       const label = document.createElement("div");
       label.className = "cat-label";
-      label.textContent = t.cats[catKey] || catKey;
-      catEl.appendChild(label);
+      label.textContent = STR[state.lang].cats[catKey] || catKey;
+      const toggle = document.createElement("span");
+      toggle.className = "cat-toggle" + (state.catHidden[catKey] ? " closed" : "");
+      toggle.textContent = "▼";
+      header.appendChild(label);
+      header.appendChild(toggle);
+      header.addEventListener("click", ()=>{
+        state.catHidden[catKey] = !state.catHidden[catKey];
+        save();
+        renderAll();
+      });
+      catEl.appendChild(header);
+
+      const body = document.createElement("div");
+      body.className = "cat-body" + (state.catHidden[catKey] ? " closed" : "");
+      body.style.maxHeight = state.catHidden[catKey] ? "0" : "2000px";
 
       items.forEach(item=>{
         const row = document.createElement("div");
-        row.className = "task" + (state.done[item.id] ? " done" : "");
+        const isDone = !!state.done[item.id];
+        const isDisabled = item.dependsOn && !state.done[item.dependsOn];
+        row.className = "task" + (isDone ? " done" : "") + (isDisabled ? " disabled" : "");
         row.setAttribute("role","checkbox");
-        row.setAttribute("aria-checked", state.done[item.id] ? "true" : "false");
+        row.setAttribute("aria-checked", isDone ? "true" : "false");
         row.tabIndex = 0;
 
         const box = document.createElement("div");
@@ -576,25 +932,45 @@
 
         const label2 = document.createElement("div");
         label2.className = "label";
-        label2.textContent = item[state.lang];
+        let text = item[state.lang];
+        if(state.gender === "female" && state.lang === "ru") text = getPronoun(text);
+        label2.textContent = text;
+
+        // Date picker
+        const dateWrap = document.createElement("div");
+        dateWrap.className = "task-date";
+        const dateInput = document.createElement("input");
+        dateInput.type = "date";
+        dateInput.value = state.dates[item.id] || "";
+        dateInput.addEventListener("change", (e)=>{
+          e.stopPropagation();
+          if(e.target.value) state.dates[item.id] = e.target.value;
+          else delete state.dates[item.id];
+          save();
+        });
+        dateInput.addEventListener("click", e=>e.stopPropagation());
+        dateWrap.appendChild(dateInput);
 
         row.appendChild(box);
         row.appendChild(label2);
+        row.appendChild(dateWrap);
 
         function toggle(){
+          if(isDisabled) return;
           state.done[item.id] = !state.done[item.id];
-          row.classList.toggle("done", !!state.done[item.id]);
-          row.setAttribute("aria-checked", state.done[item.id] ? "true" : "false");
+          if(!state.done[item.id]) delete state.dates[item.id];
           save();
-          updateProgress();
+          renderAll();
         }
         row.addEventListener("click", toggle);
         row.addEventListener("keydown", e=>{
           if(e.key === " " || e.key === "Enter"){ e.preventDefault(); toggle(); }
         });
 
-        catEl.appendChild(row);
+        body.appendChild(row);
       });
+
+      catEl.appendChild(body);
       pageEl.appendChild(catEl);
     });
   }
@@ -607,23 +983,75 @@
     barEl.style.width = (total ? (done/total*100) : 0) + "%";
   }
 
+  function applyTheme(){
+    document.documentElement.setAttribute("data-theme", state.theme);
+    themeSelect.value = state.theme;
+  }
+
   function applyScreenSize(){
     wrapEl.className = "wrap";
     if(state.screenSize && state.screenSize !== "computer"){
       wrapEl.classList.add(state.screenSize);
+    }
+    screenSizeSelect.value = state.screenSize;
+  }
+
+  function applyOffline(){
+    offlineToggle.checked = state.offline;
+    const status = document.getElementById("offlineStatus");
+    if(state.offline){
+      status.innerHTML = ' <span class="offline-badge">📡 OFFLINE</span>';
+      // Register service worker if offline mode enabled
+      if('serviceWorker' in navigator){
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+      }
+    } else {
+      status.innerHTML = '';
     }
   }
 
   function renderAll(){
     renderStaticText();
     renderReligionOptions();
-    renderScreenSizeOptions();
+    renderGenderOptions();
     renderTasks();
     updateProgress();
+    applyTheme();
     applyScreenSize();
+    applyOffline();
+    // settings panel state
+    if(settingsPanel.classList.contains("open")){
+      settingsPanel.style.display = "grid";
+    } else {
+      settingsPanel.style.display = "none";
+    }
   }
 
-  // ---------- events ----------
+  // ===== Settings toggle =====
+  settingsToggle.addEventListener("click", ()=>{
+    settingsPanel.classList.toggle("open");
+    settingsPanel.style.display = settingsPanel.classList.contains("open") ? "grid" : "none";
+  });
+
+  // ===== Settings events =====
+  themeSelect.addEventListener("change", ()=>{
+    state.theme = themeSelect.value;
+    save();
+    applyTheme();
+  });
+
+  screenSizeSelect.addEventListener("change", ()=>{
+    state.screenSize = screenSizeSelect.value;
+    save();
+    applyScreenSize();
+  });
+
+  offlineToggle.addEventListener("change", ()=>{
+    state.offline = offlineToggle.checked;
+    save();
+    applyOffline();
+  });
+
   document.querySelectorAll("#langGroup button").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       state.lang = btn.dataset.lang;
@@ -638,22 +1066,138 @@
     renderAll();
   });
 
-  screenSizeSelect.addEventListener("change", ()=>{
-    state.screenSize = screenSizeSelect.value;
+  genderSelect.addEventListener("change", ()=>{
+    state.gender = genderSelect.value;
     save();
-    applyScreenSize();
+    renderAll();
   });
 
   document.getElementById("resetBtn").addEventListener("click", ()=>{
     if(confirm(STR[state.lang].resetConfirm)){
       state.done = {};
+      state.dates = {};
       save();
       renderAll();
     }
   });
 
-  // ---------- init ----------
+  // ===== Export / Import =====
+  function exportData(type){
+    const data = {
+      version: "V2",
+      exportDate: new Date().toISOString(),
+      state: state,
+      tasks: TASKS
+    };
+    const str = JSON.stringify(data, null, 2);
+
+    if(type === 'json'){
+      const blob = new Blob([str], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `life-passport-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if(type === 'csv'){
+      let csv = "ID,Category,Task,Done,Date\n";
+      TASKS.forEach(t=>{
+        const done = state.done[t.id] ? "Yes" : "No";
+        const date = state.dates[t.id] || "";
+        const cat = STR[state.lang].cats[t.cat] || t.cat;
+        const text = t[state.lang] || t.ru;
+        csv += `"${t.id}","${cat}","${text}",${done},"${date}"\n`;
+      });
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `life-passport-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if(type === 'pdf'){
+      const el = document.createElement('div');
+      el.innerHTML = `
+        <h1 style="font-family:serif;">Life Passport</h1>
+        <p>${new Date().toLocaleDateString()}</p>
+        <table style="width:100%;border-collapse:collapse;">
+          <tr><th style="border:1px solid #ccc;padding:6px;">Task</th><th style="border:1px solid #ccc;padding:6px;">Done</th><th style="border:1px solid #ccc;padding:6px;">Date</th></tr>
+          ${TASKS.map(t=>{
+            const done = state.done[t.id] ? "✅" : "⬜";
+            const date = state.dates[t.id] || "";
+            const text = t[state.lang] || t.ru;
+            return `<tr><td style="border:1px solid #ccc;padding:6px;">${text}</td><td style="border:1px solid #ccc;padding:6px;text-align:center;">${done}</td><td style="border:1px solid #ccc;padding:6px;">${date}</td></tr>`;
+          }).join('')}
+        </table>
+      `;
+      el.style.padding = '20px';
+      el.style.fontFamily = 'sans-serif';
+      html2pdf().set({ margin: 10, filename: `life-passport-${new Date().toISOString().slice(0,10)}.pdf` }).from(el).save();
+    }
+  }
+
+  document.getElementById("exportJSON").addEventListener("click", ()=>exportData('json'));
+  document.getElementById("exportCSV").addEventListener("click", ()=>exportData('csv'));
+  document.getElementById("exportPDF").addEventListener("click", ()=>exportData('pdf'));
+
+  document.getElementById("importFile").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(data.state){
+          state = Object.assign(state, data.state);
+          save();
+          renderAll();
+          alert("Import successful!");
+        }
+      }catch(err){ alert("Invalid file format"); }
+    };
+    reader.readAsText(file);
+    this.value = '';
+  });
+
+  // ===== Init =====
   renderAll();
+
+  // ===== PWA: manifest generation =====
+  function generateManifest(){
+    const manifest = {
+      name: "Life Passport",
+      short_name: "LifePassport",
+      description: "Personal life achievements checklist",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#F3ECDC",
+      theme_color: "#B8923F",
+      icons: [
+        { src: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#B8923F"/><text x="50" y="68" font-size="50" text-anchor="middle" fill="white" font-family="serif">✈</text></svg>'), sizes: "192x192", type: "image/svg+xml" }
+      ]
+    };
+    // If we're online and sw.js exists, we let the service worker handle it
+  }
+
+  // Dynamically create manifest link if not present
+  if(!document.querySelector('link[rel="manifest"]')){
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = 'data:application/json,'+encodeURIComponent(JSON.stringify({
+      name: "Life Passport",
+      short_name: "LifePassport",
+      description: "Personal life achievements checklist",
+      start_url: ".",
+      display: "standalone",
+      background_color: "#F3ECDC",
+      theme_color: "#B8923F",
+      icons: [
+        { src: "data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#B8923F"/><text x="50" y="68" font-size="50" text-anchor="middle" fill="white" font-family="serif">✈</text></svg>'), sizes: "192x192", type: "image/svg+xml" }
+      ]
+    }));
+    document.head.appendChild(link);
+  }
+
 })();
 </script>
 </body>
