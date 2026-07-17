@@ -275,8 +275,9 @@
     box-shadow: var(--card-shadow);
     position:relative;
     overflow-y: auto;
-    max-height: 800px;
-    transition: background .3s, color .3s;
+    max-height: 85vh;
+    min-height: 300px;
+    transition: background .3s, color .3s, max-height .3s;
   }
   .page::-webkit-scrollbar{
     width: 6px;
@@ -341,7 +342,7 @@
   .cat-toggle.closed{ transform:rotate(-90deg); }
 
   .cat-body{
-    transition: max-height .4s ease, opacity .4s ease;
+    transition: max-height .5s ease, opacity .4s ease;
     overflow: hidden;
   }
   .cat-body.closed{
@@ -507,7 +508,7 @@
     .badge .bar{ width:80px; }
     .settings-panel{ grid-template-columns:1fr; }
     .task-date{ min-width:70px; font-size:.65rem; }
-    .page{ max-height: 600px; }
+    .page{ max-height: 75vh; min-height: 250px; }
     .import-area .row{ flex-direction:column; align-items:stretch; }
     .import-area .row label, .import-area .row button{ text-align:center; }
   }
@@ -709,7 +710,7 @@
     {id:"l1",cat:"legal",ru:"Получал штраф",en:"Got a fine"},
     {id:"l2",cat:"legal",ru:"Сидел в тюрьме",en:"Been to prison"},
 
-    // Pets (added new)
+    // Pets
     {id:"pet1",cat:"pets",ru:"Завёл собаку",en:"Got a dog"},
     {id:"pet2",cat:"pets",ru:"Завёл кошку",en:"Got a cat"},
     {id:"pet3",cat:"pets",ru:"Завёл хомяка",en:"Got a hamster"},
@@ -839,7 +840,7 @@
     {id:"lang28",cat:"languages",ru:"Выучил вьетнамский",en:"Learned Vietnamese"},
     {id:"lang29",cat:"languages",ru:"Выучил корейский",en:"Learned Korean"},
 
-    // Food (added turkey, rabbit, 100-year egg, fugu)
+    // Food
     {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
     {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
     {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
@@ -868,7 +869,7 @@
     {id:"f26",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
     {id:"f27",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
 
-    // Drinks (smoking moved to adult)
+    // Drinks
     {id:"d1",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
     {id:"d1a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d1"},
     {id:"d1b",cat:"drinks",ru:"  Пробовал пиво",en:"  Tried beer", dependsOn:"d1"},
@@ -883,7 +884,7 @@
     {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
     {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"},
 
-    // Adult (smoking moved here, added adult video)
+    // Adult
     {id:"a1",cat:"adult",ru:"Курил",en:"Smoked", adultOnly:true},
     {id:"a2",cat:"adult",ru:"Смотрел видео для взрослых",en:"Watched adult videos", adultOnly:true},
     {id:"a3",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
@@ -902,7 +903,7 @@
     {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
     {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
 
-    // Events (new category)
+    // Events
     {id:"ev1",cat:"events",ru:"Был на Олимпийских играх",en:"Been to the Olympic Games"},
     {id:"ev2",cat:"events",ru:"Был на Евровидении",en:"Been to Eurovision"},
     {id:"ev3",cat:"events",ru:"Был на Интервидении",en:"Been to Intervision"},
@@ -1135,6 +1136,10 @@
         state.catHidden[catKey] = !state.catHidden[catKey];
         save();
         renderAll();
+        // Auto-scroll to keep header visible
+        setTimeout(()=>{
+          header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 100);
       });
       catEl.appendChild(header);
 
@@ -1147,7 +1152,7 @@
 
       const body = document.createElement("div");
       body.className = "cat-body" + (state.catHidden[catKey] ? " closed" : "");
-      body.style.maxHeight = state.catHidden[catKey] ? "0" : "2000px";
+      body.style.maxHeight = state.catHidden[catKey] ? "0" : "5000px";
 
       items.forEach(item=>{
         const row = document.createElement("div");
@@ -1196,6 +1201,10 @@
           if(!state.done[item.id]) delete state.dates[item.id];
           save();
           renderAll();
+          // Auto-scroll to keep the clicked task visible
+          setTimeout(()=>{
+            row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 200);
         }
         row.addEventListener("click", toggle);
         row.addEventListener("keydown", e=>{
@@ -1208,6 +1217,11 @@
       catEl.appendChild(body);
       pageEl.appendChild(catEl);
     });
+
+    // Scroll to top of page after render to show all content
+    setTimeout(()=>{
+      pageEl.scrollTop = 0;
+    }, 50);
   }
 
   function updateProgress(){
@@ -1389,7 +1403,6 @@
         if(format === 'json'){
           data = JSON.parse(ev.target.result);
         } else if(format === 'csv'){
-          // Simple CSV parser
           const lines = ev.target.result.split('\n');
           const headers = lines[0].split(',');
           const parsed = [];
@@ -1413,7 +1426,6 @@
             }
           });
         } else if(format === 'pdf'){
-          // PDF import is not supported (reading PDF is complex)
           alert("PDF import is not supported. Please use JSON or CSV format.");
           return;
         }
@@ -1423,7 +1435,6 @@
           renderAll();
           alert("Import successful!");
         } else if(data && data.done){
-          // Handle simple format
           state.done = data.done || {};
           state.dates = data.dates || {};
           save();
