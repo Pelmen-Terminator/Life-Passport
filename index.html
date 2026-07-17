@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport V5 — Паспорт жизни</title>
+<title>Life Passport V6 — Паспорт жизни</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -525,7 +525,7 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V5</span></h1>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V6</span></h1>
     <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
@@ -630,7 +630,15 @@
       religions:{none:"Без фильтра", christianity:"Христианство", islam:"Ислам", buddhism:"Буддизм", hinduism:"Индуизм", judaism:"Иудаизм"},
       cats:{
         milestones:"Жизненные вехи",
-        transport:"Транспорт",
+        family:"Семья",
+        internet:"Интернет",
+        tech:"Технологии",
+        nature:"Природа",
+        extreme:"Экстрим",
+        education:"Образование",
+        career:"Карьера",
+        art:"Искусство",
+        psychology:"Психология",
         travel:"Путешествия",
         purchases:"Покупки",
         languages:"Языки",
@@ -642,7 +650,8 @@
         adult:"Старше 18",
         entertainment:"Развлечения",
         legal:"Право",
-        events:"События"
+        events:"События",
+        transport:"Транспорт"
       }
     },
     en:{
@@ -663,7 +672,15 @@
       religions:{none:"No filter", christianity:"Christianity", islam:"Islam", buddhism:"Buddhism", hinduism:"Hinduism", judaism:"Judaism"},
       cats:{
         milestones:"Life Milestones",
-        transport:"Transportation",
+        family:"Family",
+        internet:"Internet",
+        tech:"Technology",
+        nature:"Nature",
+        extreme:"Extreme",
+        education:"Education",
+        career:"Career",
+        art:"Art",
+        psychology:"Psychology",
         travel:"Travel",
         purchases:"Purchases",
         languages:"Languages",
@@ -675,12 +692,13 @@
         adult:"18+",
         entertainment:"Entertainment",
         legal:"Legal",
-        events:"Events"
+        events:"Events",
+        transport:"Transportation"
       }
     }
   };
 
-  // ===== TASKS V5 =====
+  // ===== TASKS V6 =====
   const TASKS = [
     // Milestones
     {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
@@ -705,6 +723,99 @@
     {id:"m16",cat:"milestones",ru:"Был исключён из школы",en:"Expelled from school"},
     {id:"m17",cat:"milestones",ru:"Был исключён из колледжа",en:"Expelled from college"},
     {id:"m18",cat:"milestones",ru:"Был исключён из университета",en:"Expelled from university"},
+
+    // Family
+    {id:"fam1",cat:"family",ru:"Есть отец",en:"Has a father"},
+    {id:"fam2",cat:"family",ru:"Есть мать",en:"Has a mother"},
+    {id:"fam3",cat:"family",ru:"Есть бабушка",en:"Has a grandmother"},
+    {id:"fam4",cat:"family",ru:"Есть дедушка",en:"Has a grandfather"},
+    {id:"fam5",cat:"family",ru:"Есть прабабушка",en:"Has a great-grandmother"},
+    {id:"fam6",cat:"family",ru:"Есть прадедушка",en:"Has a great-grandfather"},
+    {id:"fam7",cat:"family",ru:"Есть брат",en:"Has a brother"},
+    {id:"fam8",cat:"family",ru:"Есть сестра",en:"Has a sister"},
+    {id:"fam9",cat:"family",ru:"Есть близнец",en:"Has a twin"},
+    {id:"fam10",cat:"family",ru:"Есть сводный брат",en:"Has a stepbrother"},
+    {id:"fam11",cat:"family",ru:"Есть сводная сестра",en:"Has a stepsister"},
+    {id:"fam12",cat:"family",ru:"Есть мачеха",en:"Has a stepmother"},
+    {id:"fam13",cat:"family",ru:"Есть отчим",en:"Has a stepfather"},
+    {id:"fam14",cat:"family",ru:"Усыновил ребёнка",en:"Adopted a child"},
+    {id:"fam15",cat:"family",ru:"Воспитывал ребёнка в одиночку",en:"Raised a child alone"},
+
+    // Internet
+    {id:"int1",cat:"internet",ru:"Зарегистрировался в соцсети",en:"Registered on social media"},
+    {id:"int2",cat:"internet",ru:"Стал вирусным",en:"Went viral"},
+    {id:"int3",cat:"internet",ru:"Создал YouTube канал",en:"Created a YouTube channel"},
+    {id:"int4",cat:"internet",ru:"Создал Telegram канал",en:"Created a Telegram channel"},
+    {id:"int5",cat:"internet",ru:"Заработал первые деньги",en:"Earned first money"},
+    {id:"int6",cat:"internet",ru:"Заработал деньги в интернете",en:"Earned money online"},
+    {id:"int7",cat:"internet",ru:"Купил домен",en:"Bought a domain"},
+    {id:"int8",cat:"internet",ru:"Сделал свой сайт",en:"Made own website"},
+
+    // Technology
+    {id:"tech1",cat:"tech",ru:"Сделал ИИ",en:"Created AI"},
+    {id:"tech2",cat:"tech",ru:"Сделал игру",en:"Made a game"},
+    {id:"tech3",cat:"tech",ru:"Сделал приложение",en:"Made an app"},
+    {id:"tech4",cat:"tech",ru:"Создал компанию",en:"Founded a company"},
+    {id:"tech5",cat:"tech",ru:"Создал корпорацию",en:"Founded a corporation"},
+    {id:"tech6",cat:"tech",ru:"Купил дрон",en:"Bought a drone"},
+    {id:"tech7",cat:"tech",ru:"Купил VR очки",en:"Bought VR glasses"},
+    {id:"tech8",cat:"tech",ru:"Умею пользоваться 3D принтером",en:"Can use 3D printer"},
+    {id:"tech9",cat:"tech",ru:"Отремонтировал технику сам",en:"Fixed tech myself"},
+
+    // Nature
+    {id:"nat1",cat:"nature",ru:"Сажал дерево",en:"Planted a tree"},
+    {id:"nat2",cat:"nature",ru:"Сажал цветы",en:"Planted flowers"},
+    {id:"nat3",cat:"nature",ru:"Попал под молнию",en:"Struck by lightning"},
+
+    // Extreme
+    {id:"ext1",cat:"extreme",ru:"Прыгал с тарзанки",en:"Bungee jumped"},
+    {id:"ext2",cat:"extreme",ru:"Летал на параплане",en:"Flew paraglider"},
+    {id:"ext3",cat:"extreme",ru:"Занимался сёрфингом",en:"Surfed"},
+    {id:"ext4",cat:"extreme",ru:"Катался на квадроцикле",en:"Rode ATV"},
+    {id:"ext5",cat:"extreme",ru:"Умею ездить на велосипеде",en:"Can ride a bike"},
+    {id:"ext6",cat:"extreme",ru:"Умею ездить на самокате",en:"Can ride a scooter"},
+    {id:"ext7",cat:"extreme",ru:"Ночевал у друзей",en:"Slept at friends' place"},
+    {id:"ext8",cat:"extreme",ru:"Ночевал в лесу",en:"Slept in the forest"},
+    {id:"ext9",cat:"extreme",ru:"Занимался скалолазанием",en:"Rock climbed"},
+    {id:"ext10",cat:"extreme",ru:"Спускался в пещеру",en:"Descended into a cave"},
+    {id:"ext11",cat:"extreme",ru:"Плавал с акулами",en:"Swam with sharks"},
+    {id:"ext12",cat:"extreme",ru:"Плавал со скатами",en:"Swam with rays"},
+    {id:"ext13",cat:"extreme",ru:"Кормил диких животных",en:"Fed wild animals"},
+
+    // Education
+    {id:"edu1",cat:"education",ru:"Прошёл онлайн курс",en:"Completed online course"},
+    {id:"edu2",cat:"education",ru:"Получил второе образование",en:"Got second education"},
+    {id:"edu3",cat:"education",ru:"Учился за границей",en:"Studied abroad"},
+    {id:"edu4",cat:"education",ru:"Защитил диссертацию",en:"Defended thesis"},
+    {id:"edu5",cat:"education",ru:"Написал книгу",en:"Wrote a book"},
+    {id:"edu6",cat:"education",ru:"Написал статью",en:"Wrote an article"},
+    {id:"edu7",cat:"education",ru:"Получил грант",en:"Got a grant"},
+    {id:"edu8",cat:"education",ru:"Участвовал в олимпиаде",en:"Participated in Olympiad"},
+    {id:"edu9",cat:"education",ru:"Победил в олимпиаде",en:"Won an Olympiad"},
+    {id:"edu10",cat:"education",ru:"Получил Нобелевскую премию",en:"Won Nobel Prize"},
+
+    // Career
+    {id:"car1",cat:"career",ru:"Стал директором",en:"Became a director"},
+    {id:"car2",cat:"career",ru:"Работал на удалёнке",en:"Worked remotely"},
+    {id:"car3",cat:"career",ru:"Работал в ночную смену",en:"Worked night shift"},
+
+    // Art
+    {id:"art1",cat:"art",ru:"Рисовал картину",en:"Painted a picture"},
+    {id:"art2",cat:"art",ru:"Создавал музыку",en:"Created music"},
+    {id:"art3",cat:"art",ru:"Пел",en:"Sang"},
+    {id:"art4",cat:"art",ru:"Выступал на большой сцене",en:"Performed on big stage"},
+    {id:"art5",cat:"art",ru:"Пел в караоке",en:"Sang karaoke"},
+    {id:"art6",cat:"art",ru:"Снимал свои видео",en:"Shot own videos"},
+    {id:"art7",cat:"art",ru:"Монтировал видео",en:"Edited videos"},
+    {id:"art8",cat:"art",ru:"Писал стихи",en:"Wrote poetry"},
+    {id:"art9",cat:"art",ru:"Писал прозы",en:"Wrote prose"},
+    {id:"art10",cat:"art",ru:"Делал поделки своими руками",en:"Made crafts"},
+
+    // Psychology
+    {id:"psy1",cat:"psychology",ru:"Прошёл психотерапию",en:"Had psychotherapy"},
+    {id:"psy2",cat:"psychology",ru:"Простил обидчика",en:"Forgave offender"},
+    {id:"psy3",cat:"psychology",ru:"Избавился от страха",en:"Overcame fear"},
+    {id:"psy4",cat:"psychology",ru:"Избавился от фобии",en:"Overcame phobia"},
 
     // Legal
     {id:"l1",cat:"legal",ru:"Получал штраф",en:"Got a fine"},
@@ -965,12 +1076,12 @@
     {id:"e5",cat:"entertainment",ru:"Был в батутном центре",en:"Been to a trampoline park"}
   ];
 
-  const CAT_ORDER = ["milestones","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","events","entertainment"];
+  const CAT_ORDER = ["milestones","family","internet","tech","nature","extreme","education","career","art","psychology","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","events","entertainment"];
   const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
   // ===== STATE =====
-  const STORAGE_KEY = "life-passport-state-v5";
+  const STORAGE_KEY = "life-passport-state-v6";
   let state = {
     lang:"ru",
     religion:"none",
@@ -1052,7 +1163,35 @@
                  .replace(/закончил/gi,"закончила")
                  .replace(/отслужил/gi,"отслужила")
                  .replace(/смотрел/gi,"смотрела")
-                 .replace(/исключён/gi,"исключена");
+                 .replace(/исключён/gi,"исключена")
+                 .replace(/усыновил/gi,"усыновила")
+                 .replace(/воспитывал/gi,"воспитывала")
+                 .replace(/создал/gi,"создала")
+                 .replace(/сделал/gi,"сделала")
+                 .replace(/сажал/gi,"сажала")
+                 .replace(/прыгал/gi,"прыгала")
+                 .replace(/летал/gi,"летала")
+                 .replace(/занимался/gi,"занималась")
+                 .replace(/умею/gi,"умею")
+                 .replace(/ночевал/gi,"ночевала")
+                 .replace(/спускался/gi,"спускалась")
+                 .replace(/плавал/gi,"плавала")
+                 .replace(/кормил/gi,"кормила")
+                 .replace(/прошёл/gi,"прошла")
+                 .replace(/защитил/gi,"защитила")
+                 .replace(/написал/gi,"написала")
+                 .replace(/участвовал/gi,"участвовала")
+                 .replace(/победил/gi,"победила")
+                 .replace(/работал/gi,"работала")
+                 .replace(/отремонтировал/gi,"отремонтировала")
+                 .replace(/рисовал/gi,"рисовала")
+                 .replace(/выступал/gi,"выступала")
+                 .replace(/снимал/gi,"снимала")
+                 .replace(/монтировал/gi,"монтировала")
+                 .replace(/писал/gi,"писала")
+                 .replace(/простил/gi,"простила")
+                 .replace(/избавился/gi,"избавилась")
+                 .replace(/попал/gi,"попала");
     }
     return text;
   }
@@ -1105,7 +1244,7 @@
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
     const badge = document.getElementById("versionBadge");
-    if(badge) badge.textContent = "V5";
+    if(badge) badge.textContent = "V6";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
@@ -1136,10 +1275,6 @@
         state.catHidden[catKey] = !state.catHidden[catKey];
         save();
         renderAll();
-        // Auto-scroll to keep header visible
-        setTimeout(()=>{
-          header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }, 100);
       });
       catEl.appendChild(header);
 
@@ -1201,10 +1336,6 @@
           if(!state.done[item.id]) delete state.dates[item.id];
           save();
           renderAll();
-          // Auto-scroll to keep the clicked task visible
-          setTimeout(()=>{
-            row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          }, 200);
         }
         row.addEventListener("click", toggle);
         row.addEventListener("keydown", e=>{
@@ -1217,11 +1348,6 @@
       catEl.appendChild(body);
       pageEl.appendChild(catEl);
     });
-
-    // Scroll to top of page after render to show all content
-    setTimeout(()=>{
-      pageEl.scrollTop = 0;
-    }, 50);
   }
 
   function updateProgress(){
@@ -1338,7 +1464,7 @@
   // ===== Export / Import =====
   function exportData(type){
     const data = {
-      version: "V5",
+      version: "V6",
       exportDate: new Date().toISOString(),
       state: state,
       tasks: TASKS
