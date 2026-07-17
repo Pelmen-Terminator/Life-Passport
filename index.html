@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport V2 — Паспорт жизни</title>
+<title>Life Passport V3 — Паспорт жизни</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ===== THEMES ===== */
   :root{
     --bg: #F3ECDC;
     --bg-body: #F3ECDC;
@@ -26,8 +25,10 @@
     --input-border: #DED2B2;
     --toggle-bg: #DED2B2;
     --toggle-dot: #fff;
-    --navy: #1B2A41;
     --radius: 14px;
+    --warning-bg: #fff3cd;
+    --warning-border: #ffc107;
+    --warning-text: #856404;
     font-size: 16px;
   }
   [data-theme="dark"]{
@@ -46,10 +47,12 @@
     --input-border: #3a3a5a;
     --toggle-bg: #3a3a5a;
     --toggle-dot: #f0c060;
-    --navy: #0d1b2a;
+    --warning-bg: #2d2a1a;
+    --warning-border: #ffc107;
+    --warning-text: #f0d060;
   }
   *{ box-sizing:border-box; }
-  html,body{margin:0;padding:0;transition: background .3s, color .3s;}
+  html,body{margin:0;padding:0;}
   body{
     background: var(--bg-body);
     color: var(--text);
@@ -139,7 +142,7 @@
     color:#1c1608;
     font-weight:600;
   }
-  select.religion, select.gender{
+  select.religion, select.gender, select.age{
     font-family:'IBM Plex Sans', sans-serif;
     font-size:.85rem;
     background: var(--input-bg);
@@ -200,7 +203,6 @@
     cursor:pointer;
     flex:1;
   }
-  /* toggle switch */
   .switch{ position:relative; width:40px; height:22px; flex:0 0 40px; }
   .switch input{ opacity:0; width:0; height:0; }
   .slider{
@@ -334,6 +336,20 @@
   .cat-body{ transition: max-height .3s ease, opacity .3s; overflow:hidden; }
   .cat-body.closed{ max-height:0 !important; opacity:0; padding-top:0; }
 
+  .age-warning{
+    background: var(--warning-bg);
+    border-left: 4px solid var(--warning-border);
+    padding: 8px 14px;
+    margin: 4px 0 12px;
+    border-radius: 6px;
+    font-size: .78rem;
+    color: var(--warning-text);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .age-warning .icon{ font-size:1.1rem; }
+
   .task{
     display:flex;
     align-items:center;
@@ -412,13 +428,6 @@
   }
   .task-date input:focus{ outline:none; }
 
-  .empty-cat{
-    font-size:.85rem;
-    color: var(--text-secondary);
-    padding:6px 2px 14px;
-    font-style:italic;
-  }
-
   .import-area{
     margin-top:12px;
     display:flex;
@@ -448,7 +457,6 @@
     line-height:1.6;
   }
 
-  /* offline indicator */
   .offline-badge{
     display:inline-block;
     background: var(--stamp);
@@ -480,7 +488,7 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V2</span></h1>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V3</span></h1>
     <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
@@ -492,6 +500,7 @@
       </div>
       <select class="religion" id="religionSelect"></select>
       <select class="gender" id="genderSelect"></select>
+      <select class="age" id="ageSelect"></select>
       <button class="settings-toggle" id="settingsToggle">⚙️</button>
     </div>
   </div>
@@ -500,8 +509,8 @@
     <label>
       <span data-i18n="theme">Тема</span>
       <select id="themeSelect">
-        <option value="light">☀️ Light</option>
-        <option value="dark">🌙 Dark</option>
+        <option value="light">☀️ Светлая</option>
+        <option value="dark">🌙 Тёмная</option>
       </select>
     </label>
     <label>
@@ -566,7 +575,9 @@
       screenSize:"Размер экрана",
       offlineMode:"Офлайн-режим",
       importExport:"Импорт / Экспорт",
+      ageWarning:"Некоторые пункты в этой категории доступны только для пользователей старше 18 лет.",
       genders:{male:"Мужской", female:"Женский"},
+      ages:{under18:"Меньше 18", over18:"Больше 18"},
       religions:{none:"Без фильтра", christianity:"Христианство", islam:"Ислам", buddhism:"Буддизм", hinduism:"Индуизм", judaism:"Иудаизм"},
       cats:{
         milestones:"Жизненные вехи",
@@ -575,11 +586,12 @@
         purchases:"Покупки",
         languages:"Языки",
         food:"Еда",
-        meat:"Мясо и морепродукты",
         pets:"Питомцы",
         sports:"Спорт",
         drinks:"Напитки",
-        water:"Водоёмы"
+        water:"Водоёмы",
+        adult:"Старше 18",
+        entertainment:"Развлечения"
       }
     },
     en:{
@@ -594,7 +606,9 @@
       screenSize:"Screen Size",
       offlineMode:"Offline Mode",
       importExport:"Import / Export",
+      ageWarning:"Some items in this category are only available for users over 18.",
       genders:{male:"Male", female:"Female"},
+      ages:{under18:"Under 18", over18:"Over 18"},
       religions:{none:"No filter", christianity:"Christianity", islam:"Islam", buddhism:"Buddhism", hinduism:"Hinduism", judaism:"Judaism"},
       cats:{
         milestones:"Life Milestones",
@@ -603,16 +617,17 @@
         purchases:"Purchases",
         languages:"Languages",
         food:"Food",
-        meat:"Meat & Seafood",
         pets:"Pets",
         sports:"Sports",
         drinks:"Drinks",
-        water:"Bodies of Water"
+        water:"Bodies of Water",
+        adult:"18+",
+        entertainment:"Entertainment"
       }
     }
   };
 
-  // ===== TASKS with dependencies =====
+  // ===== TASKS V3 =====
   const TASKS = [
     // Milestones
     {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
@@ -665,6 +680,22 @@
     {id:"p4c",cat:"purchases",ru:"  HP",en:"  HP", dependsOn:"p4"},
     {id:"p4d",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p4"},
     {id:"p5",cat:"purchases",ru:"Купил автомобиль",en:"Bought a car"},
+    {id:"p5a",cat:"purchases",ru:"  Toyota",en:"  Toyota", dependsOn:"p5"},
+    {id:"p5b",cat:"purchases",ru:"  Volkswagen",en:"  Volkswagen", dependsOn:"p5"},
+    {id:"p5c",cat:"purchases",ru:"  BMW",en:"  BMW", dependsOn:"p5"},
+    {id:"p5d",cat:"purchases",ru:"  BYD",en:"  BYD", dependsOn:"p5"},
+    {id:"p5e",cat:"purchases",ru:"  Hyundai",en:"  Hyundai", dependsOn:"p5"},
+    {id:"p5f",cat:"purchases",ru:"  Honda",en:"  Honda", dependsOn:"p5"},
+    {id:"p5g",cat:"purchases",ru:"  Nissan",en:"  Nissan", dependsOn:"p5"},
+    {id:"p5h",cat:"purchases",ru:"  Kia",en:"  Kia", dependsOn:"p5"},
+    {id:"p5i",cat:"purchases",ru:"  Chevrolet",en:"  Chevrolet", dependsOn:"p5"},
+    {id:"p5j",cat:"purchases",ru:"  Suzuki",en:"  Suzuki", dependsOn:"p5"},
+    {id:"p5k",cat:"purchases",ru:"  Lada",en:"  Lada", dependsOn:"p5"},
+    {id:"p5l",cat:"purchases",ru:"  Haval",en:"  Haval", dependsOn:"p5"},
+    {id:"p5m",cat:"purchases",ru:"  Tenet",en:"  Tenet", dependsOn:"p5"},
+    {id:"p5n",cat:"purchases",ru:"  Lamborghini",en:"  Lamborghini", dependsOn:"p5"},
+    {id:"p5o",cat:"purchases",ru:"  Rolls-Royce",en:"  Rolls-Royce", dependsOn:"p5"},
+    {id:"p5p",cat:"purchases",ru:"  Bugatti",en:"  Bugatti", dependsOn:"p5"},
     {id:"p6",cat:"purchases",ru:"Купил квартиру",en:"Bought an apartment"},
     {id:"p7",cat:"purchases",ru:"Купил дом",en:"Bought a house"},
     {id:"p8",cat:"purchases",ru:"Купил самолёт",en:"Bought a plane"},
@@ -699,7 +730,7 @@
     {id:"t5",cat:"transport",ru:"Ездил в автомобиле",en:"Ridden in a car"},
     {id:"t6",cat:"transport",ru:"Ездил в поезде",en:"Ridden a train"},
 
-    // Languages
+    // Languages (added RU-specific)
     {id:"l1",cat:"languages",ru:"Выучил русский",en:"Learned Russian"},
     {id:"l2",cat:"languages",ru:"Выучил английский",en:"Learned English"},
     {id:"l3",cat:"languages",ru:"Выучил испанский",en:"Learned Spanish"},
@@ -710,8 +741,13 @@
     {id:"l8",cat:"languages",ru:"Выучил португальский",en:"Learned Portuguese"},
     {id:"l9",cat:"languages",ru:"Выучил итальянский",en:"Learned Italian"},
     {id:"l10",cat:"languages",ru:"Выучил китайский",en:"Learned Chinese"},
+    {id:"l11",cat:"languages",ru:"Выучил татарский",en:"Learned Tatar", langOnly:"ru"},
+    {id:"l12",cat:"languages",ru:"Выучил башкирский",en:"Learned Bashkir", langOnly:"ru"},
+    {id:"l13",cat:"languages",ru:"Выучил чеченский",en:"Learned Chechen", langOnly:"ru"},
+    {id:"l14",cat:"languages",ru:"Выучил бурятский",en:"Learned Buryat", langOnly:"ru"},
+    {id:"l15",cat:"languages",ru:"Выучил якутский",en:"Learned Yakut", langOnly:"ru"},
 
-    // Food
+    // Food (all meat moved here, added new items)
     {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
     {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
     {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
@@ -722,17 +758,37 @@
     {id:"f8",cat:"food",ru:"Ел чёрную икру",en:"Eaten black caviar"},
     {id:"f9",cat:"food",ru:"Ел экзотические фрукты",en:"Eaten exotic fruits"},
     {id:"f10",cat:"food",ru:"Ловил рыбу",en:"Gone fishing"},
+    // Meat items (moved from meat category)
+    {id:"f11",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
+    {id:"f12",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
+    {id:"f13",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
+    {id:"f14",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
+    {id:"f15",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
+    {id:"f16",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
+    {id:"f17",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
+    {id:"f18",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
+    {id:"f19",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
 
-    // Meat
-    {id:"mt1",cat:"meat",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
-    {id:"mt2",cat:"meat",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
-    {id:"mt3",cat:"meat",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
-    {id:"mt4",cat:"meat",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
-    {id:"mt5",cat:"meat",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
-    {id:"mt6",cat:"meat",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
-    {id:"mt7",cat:"meat",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
-    {id:"mt8",cat:"meat",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
-    {id:"mt9",cat:"meat",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
+    // Drinks (moved alcohol here, added dependencies)
+    {id:"d1",cat:"drinks",ru:"Курил",en:"Smoked"},
+    {id:"d2",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
+    {id:"d2a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d2"},
+    {id:"d2b",cat:"drinks",ru:"  Пробовал пиво",en:"  Tried beer", dependsOn:"d2"},
+    {id:"d2c",cat:"drinks",ru:"  Пробовал вино",en:"  Tried wine", dependsOn:"d2"},
+    {id:"d2d",cat:"drinks",ru:"  Пробовал водку",en:"  Tried vodka", dependsOn:"d2"},
+    {id:"d3",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
+    {id:"d4",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
+
+    // Water bodies
+    {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
+    {id:"w2",cat:"water",ru:"Был на речке",en:"Been to a river"},
+    {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
+    {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"},
+
+    // Adult category (18+)
+    {id:"a1",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
+    {id:"a2",cat:"adult",ru:"Целовался",en:"Kissed someone", adultOnly:true},
+    {id:"a3",cat:"adult",ru:"Занимался сексом",en:"Had sex", adultOnly:true},
 
     // Sports
     {id:"s1",cat:"sports",ru:"Играл в футбол",en:"Played football"},
@@ -746,29 +802,64 @@
     {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
     {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
 
-    // Drinks
-    {id:"d1",cat:"drinks",ru:"Курил",en:"Smoked"},
-    {id:"d2",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
-    {id:"d3",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
-    {id:"d4",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
-
-    // Water bodies
-    {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
-    {id:"w2",cat:"water",ru:"Был на речке",en:"Been to a river"},
-    {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
-    {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"}
+    // Entertainment (new category)
+    {id:"e1",cat:"entertainment",ru:"Играл в видеоигры",en:"Played video games"},
+    {id:"e1a",cat:"entertainment",ru:"  CS:GO 2",en:"  CS:GO 2", dependsOn:"e1"},
+    {id:"e1b",cat:"entertainment",ru:"  Dota 2",en:"  Dota 2", dependsOn:"e1"},
+    {id:"e1c",cat:"entertainment",ru:"  GTA 5",en:"  GTA 5", dependsOn:"e1"},
+    {id:"e1d",cat:"entertainment",ru:"  GTA 6",en:"  GTA 6", dependsOn:"e1"},
+    {id:"e1e",cat:"entertainment",ru:"  GTA 4",en:"  GTA 4", dependsOn:"e1"},
+    {id:"e1f",cat:"entertainment",ru:"  GTA 3",en:"  GTA 3", dependsOn:"e1"},
+    {id:"e1g",cat:"entertainment",ru:"  GTA 2",en:"  GTA 2", dependsOn:"e1"},
+    {id:"e1h",cat:"entertainment",ru:"  GTA",en:"  GTA", dependsOn:"e1"},
+    {id:"e1i",cat:"entertainment",ru:"  PUBG",en:"  PUBG", dependsOn:"e1"},
+    {id:"e1j",cat:"entertainment",ru:"  Palworld",en:"  Palworld", dependsOn:"e1"},
+    {id:"e1k",cat:"entertainment",ru:"  EA SPORTS FC 26",en:"  EA SPORTS FC 26", dependsOn:"e1"},
+    {id:"e1l",cat:"entertainment",ru:"  Apex Legends",en:"  Apex Legends", dependsOn:"e1"},
+    {id:"e1m",cat:"entertainment",ru:"  Marvel Rivals",en:"  Marvel Rivals", dependsOn:"e1"},
+    {id:"e1n",cat:"entertainment",ru:"  Warframe",en:"  Warframe", dependsOn:"e1"},
+    {id:"e1o",cat:"entertainment",ru:"  Rust",en:"  Rust", dependsOn:"e1"},
+    {id:"e1p",cat:"entertainment",ru:"  Dead by Daylight",en:"  Dead by Daylight", dependsOn:"e1"},
+    {id:"e1q",cat:"entertainment",ru:"  War Thunder",en:"  War Thunder", dependsOn:"e1"},
+    {id:"e1r",cat:"entertainment",ru:"  World of Tanks",en:"  World of Tanks", dependsOn:"e1"},
+    {id:"e1s",cat:"entertainment",ru:"  World of Warships",en:"  World of Warships", dependsOn:"e1"},
+    {id:"e1t",cat:"entertainment",ru:"  Minecraft",en:"  Minecraft", dependsOn:"e1"},
+    {id:"e1u",cat:"entertainment",ru:"  Roblox",en:"  Roblox", dependsOn:"e1"},
+    {id:"e1v",cat:"entertainment",ru:"  Sims",en:"  Sims", dependsOn:"e1"},
+    {id:"e1w",cat:"entertainment",ru:"  Sims 2",en:"  Sims 2", dependsOn:"e1"},
+    {id:"e1x",cat:"entertainment",ru:"  Sims 3",en:"  Sims 3", dependsOn:"e1"},
+    {id:"e1y",cat:"entertainment",ru:"  Sims 4",en:"  Sims 4", dependsOn:"e1"},
+    {id:"e1z",cat:"entertainment",ru:"  NARAKA: BLADEPOINT",en:"  NARAKA: BLADEPOINT", dependsOn:"e1"},
+    {id:"e1aa",cat:"entertainment",ru:"  Genshin Impact",en:"  Genshin Impact", dependsOn:"e1"},
+    {id:"e1ab",cat:"entertainment",ru:"  Cyberpunk 2077",en:"  Cyberpunk 2077", dependsOn:"e1"},
+    {id:"e1ac",cat:"entertainment",ru:"  Tom Clancy's Rainbow Six Siege",en:"  Tom Clancy's Rainbow Six Siege", dependsOn:"e1"},
+    {id:"e1ad",cat:"entertainment",ru:"  Path of Exile 2",en:"  Path of Exile 2", dependsOn:"e1"},
+    {id:"e1ae",cat:"entertainment",ru:"  Team Fortress 2",en:"  Team Fortress 2", dependsOn:"e1"},
+    {id:"e1af",cat:"entertainment",ru:"  Euro Truck Simulator 2",en:"  Euro Truck Simulator 2", dependsOn:"e1"},
+    {id:"e1ag",cat:"entertainment",ru:"  Euro Truck Simulator",en:"  Euro Truck Simulator", dependsOn:"e1"},
+    {id:"e1ah",cat:"entertainment",ru:"  Baldur's Gate 3",en:"  Baldur's Gate 3", dependsOn:"e1"},
+    {id:"e1ai",cat:"entertainment",ru:"  Subnautica",en:"  Subnautica", dependsOn:"e1"},
+    {id:"e1aj",cat:"entertainment",ru:"  Subnautica 2",en:"  Subnautica 2", dependsOn:"e1"},
+    {id:"e1ak",cat:"entertainment",ru:"  Subway Surfers",en:"  Subway Surfers", dependsOn:"e1"},
+    {id:"e1al",cat:"entertainment",ru:"  Brawl Stars",en:"  Brawl Stars", dependsOn:"e1"},
+    {id:"e1am",cat:"entertainment",ru:"  Clash Royale",en:"  Clash Royale", dependsOn:"e1"},
+    {id:"e2",cat:"entertainment",ru:"Был в аквапарке",en:"Been to a water park"},
+    {id:"e3",cat:"entertainment",ru:"Был в парке развлечений",en:"Been to an amusement park"},
+    {id:"e4",cat:"entertainment",ru:"Был в Disneyland",en:"Been to Disneyland"},
+    {id:"e5",cat:"entertainment",ru:"Был в батутном центре",en:"Been to a trampoline park"}
   ];
 
-  const CAT_ORDER = ["milestones","pets","purchases","travel","transport","languages","food","meat","sports","drinks","water"];
+  const CAT_ORDER = ["milestones","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","entertainment"];
   const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
   // ===== STATE =====
-  const STORAGE_KEY = "life-passport-state-v2";
+  const STORAGE_KEY = "life-passport-state-v3";
   let state = {
     lang:"ru",
     religion:"none",
     gender:"male",
+    age:"over18",
     theme:"light",
     screenSize:"computer",
     offline:false,
@@ -792,6 +883,7 @@
   const barEl = document.getElementById("barFill");
   const religionSelect = document.getElementById("religionSelect");
   const genderSelect = document.getElementById("genderSelect");
+  const ageSelect = document.getElementById("ageSelect");
   const themeSelect = document.getElementById("themeSelect");
   const screenSizeSelect = document.getElementById("screenSizeSelect");
   const offlineToggle = document.getElementById("offlineToggle");
@@ -799,14 +891,14 @@
   const settingsToggle = document.getElementById("settingsToggle");
 
   // ===== Helpers =====
-  function getText(key){ return STR[state.lang][key] || key; }
-
   function visibleTasks(){
     const hide = RELIGION_HIDE[state.religion] || [];
     return TASKS.filter(t=>{
       if(t.langOnly && t.langOnly !== state.lang) return false;
       if(t.tags && t.tags.some(tag => hide.includes(tag))) return false;
       if(t.dependsOn && !state.done[t.dependsOn]) return false;
+      // Age filter
+      if(t.adultOnly && state.age === "under18") return false;
       return true;
     });
   }
@@ -836,7 +928,10 @@
                  .replace(/катался/gi,"каталась")
                  .replace(/курил/gi,"курила")
                  .replace(/пил/gi,"пила")
-                 .replace(/был/gi,"была");
+                 .replace(/был/gi,"была")
+                 .replace(/мастурбировал/gi,"мастурбировала")
+                 .replace(/целовался/gi,"целовалась")
+                 .replace(/занимался/gi,"занималась");
     }
     return text;
   }
@@ -866,6 +961,18 @@
     });
   }
 
+  function renderAgeOptions(){
+    const t = STR[state.lang].ages;
+    ageSelect.innerHTML = "";
+    ["under18","over18"].forEach(key=>{
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = t[key] || key;
+      if(key === state.age) opt.selected = true;
+      ageSelect.appendChild(opt);
+    });
+  }
+
   function renderStaticText(){
     document.documentElement.lang = state.lang;
     const t = STR[state.lang];
@@ -877,7 +984,7 @@
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
     const badge = document.getElementById("versionBadge");
-    if(badge) badge.textContent = "V2";
+    if(badge) badge.textContent = "V3";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
@@ -911,6 +1018,14 @@
       });
       catEl.appendChild(header);
 
+      // Age warning for adult category
+      if(catKey === "adult" && state.age === "under18"){
+        const warning = document.createElement("div");
+        warning.className = "age-warning";
+        warning.innerHTML = `<span class="icon">⚠️</span> ${STR[state.lang].ageWarning || "Some items in this category are only available for users over 18."}`;
+        catEl.appendChild(warning);
+      }
+
       const body = document.createElement("div");
       body.className = "cat-body" + (state.catHidden[catKey] ? " closed" : "");
       body.style.maxHeight = state.catHidden[catKey] ? "0" : "2000px";
@@ -919,7 +1034,8 @@
         const row = document.createElement("div");
         const isDone = !!state.done[item.id];
         const isDisabled = item.dependsOn && !state.done[item.dependsOn];
-        row.className = "task" + (isDone ? " done" : "") + (isDisabled ? " disabled" : "");
+        const isAdultHidden = item.adultOnly && state.age === "under18";
+        row.className = "task" + (isDone ? " done" : "") + (isDisabled || isAdultHidden ? " disabled" : "");
         row.setAttribute("role","checkbox");
         row.setAttribute("aria-checked", isDone ? "true" : "false");
         row.tabIndex = 0;
@@ -957,7 +1073,7 @@
         row.appendChild(dateWrap);
 
         function toggle(){
-          if(isDisabled) return;
+          if(isDisabled || isAdultHidden) return;
           state.done[item.id] = !state.done[item.id];
           if(!state.done[item.id]) delete state.dates[item.id];
           save();
@@ -1014,6 +1130,7 @@
     renderStaticText();
     renderReligionOptions();
     renderGenderOptions();
+    renderAgeOptions();
     renderTasks();
     updateProgress();
     applyTheme();
@@ -1071,6 +1188,12 @@
     renderAll();
   });
 
+  ageSelect.addEventListener("change", ()=>{
+    state.age = ageSelect.value;
+    save();
+    renderAll();
+  });
+
   document.getElementById("resetBtn").addEventListener("click", ()=>{
     if(confirm(STR[state.lang].resetConfirm)){
       state.done = {};
@@ -1083,7 +1206,7 @@
   // ===== Export / Import =====
   function exportData(type){
     const data = {
-      version: "V2",
+      version: "V3",
       exportDate: new Date().toISOString(),
       state: state,
       tasks: TASKS
