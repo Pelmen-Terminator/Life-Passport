@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport V3 — Паспорт жизни</title>
+<title>Life Passport V4 — Паспорт жизни</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -488,7 +488,7 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V3</span></h1>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V4</span></h1>
     <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
@@ -591,7 +591,8 @@
         drinks:"Напитки",
         water:"Водоёмы",
         adult:"Старше 18",
-        entertainment:"Развлечения"
+        entertainment:"Развлечения",
+        legal:"Право"
       }
     },
     en:{
@@ -622,24 +623,32 @@
         drinks:"Drinks",
         water:"Bodies of Water",
         adult:"18+",
-        entertainment:"Entertainment"
+        entertainment:"Entertainment",
+        legal:"Legal"
       }
     }
   };
 
-  // ===== TASKS V3 =====
+  // ===== TASKS V4 =====
   const TASKS = [
     // Milestones
     {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
     {id:"m2",cat:"milestones",ru:"Получил водительские права",en:"Got a driver's license"},
-    {id:"m3",cat:"milestones",ru:"Устроился на первую работу",en:"Got first job"},
-    {id:"m4",cat:"milestones",ru:"Сменил профессию",en:"Changed career"},
-    {id:"m5",cat:"milestones",ru:"Переехал в другой город",en:"Moved to another city"},
-    {id:"m6",cat:"milestones",ru:"Переехал в другую страну",en:"Moved to another country"},
-    {id:"m7",cat:"milestones",ru:"Стал родителем",en:"Became a parent"},
-    {id:"m8",cat:"milestones",ru:"Сыграл свадьбу",en:"Got married"},
-    {id:"m9",cat:"milestones",ru:"Развёлся",en:"Got divorced"},
-    {id:"m10",cat:"milestones",ru:"Вышел на пенсию",en:"Retired"},
+    {id:"m3",cat:"milestones",ru:"Закончил школу",en:"Finished school"},
+    {id:"m4",cat:"milestones",ru:"Закончил колледж",en:"Finished college"},
+    {id:"m5",cat:"milestones",ru:"Закончил университет",en:"Finished university"},
+    {id:"m6",cat:"milestones",ru:"Устроился на первую работу",en:"Got first job"},
+    {id:"m7",cat:"milestones",ru:"Сменил профессию",en:"Changed career"},
+    {id:"m8",cat:"milestones",ru:"Переехал в другой город",en:"Moved to another city"},
+    {id:"m9",cat:"milestones",ru:"Переехал в другую страну",en:"Moved to another country"},
+    {id:"m10",cat:"milestones",ru:"Стал родителем",en:"Became a parent"},
+    {id:"m11",cat:"milestones",ru:"Сыграл свадьбу",en:"Got married"},
+    {id:"m12",cat:"milestones",ru:"Развёлся",en:"Got divorced"},
+    {id:"m13",cat:"milestones",ru:"Вышел на пенсию",en:"Retired"},
+
+    // Legal
+    {id:"l1",cat:"legal",ru:"Получал штраф",en:"Got a fine"},
+    {id:"l2",cat:"legal",ru:"Сидел в тюрьме",en:"Been to prison"},
 
     // Pets
     {id:"pet1",cat:"pets",ru:"Завёл собаку",en:"Got a dog"},
@@ -651,7 +660,7 @@
     {id:"pet7",cat:"pets",ru:"Завёл свинку (мини-пига)",en:"Got a mini-pig"},
     {id:"pet8",cat:"pets",ru:"Завёл утку",en:"Got a duck"},
 
-    // Purchases with dependencies
+    // Purchases
     {id:"p1",cat:"purchases",ru:"Купил телефон",en:"Bought a phone"},
     {id:"p1a",cat:"purchases",ru:"  iPhone",en:"  iPhone", dependsOn:"p1"},
     {id:"p1b",cat:"purchases",ru:"  Samsung",en:"  Samsung", dependsOn:"p1"},
@@ -700,27 +709,33 @@
     {id:"p7",cat:"purchases",ru:"Купил дом",en:"Bought a house"},
     {id:"p8",cat:"purchases",ru:"Купил самолёт",en:"Bought a plane"},
 
-    // Travel (RU-specific)
-    {id:"tr1",cat:"travel",ru:"Был в Сочи",en:"Been to Sochi", langOnly:"ru"},
-    {id:"tr2",cat:"travel",ru:"Был в Крыму",en:"Been to Crimea", langOnly:"ru"},
-    {id:"tr3",cat:"travel",ru:"Был в Архипо-Осиповке",en:"Been to Arkhipo-Osipovka", langOnly:"ru"},
-    {id:"tr4",cat:"travel",ru:"Был на Байкале",en:"Been to Baikal", langOnly:"ru"},
-    {id:"tr5",cat:"travel",ru:"Был в Карелии",en:"Been to Karelia", langOnly:"ru"},
-    {id:"tr6",cat:"travel",ru:"Был на Алтае",en:"Been to Altai", langOnly:"ru"},
-    {id:"tr7",cat:"travel",ru:"Был во Владивостоке",en:"Been to Vladivostok", langOnly:"ru"},
-    // Travel (EN-specific)
-    {id:"tr8",cat:"travel",ru:"Был в Сан-Франциско",en:"Been to San Francisco", langOnly:"en"},
-    {id:"tr9",cat:"travel",ru:"Был в Оттаве",en:"Been to Ottawa", langOnly:"en"},
-    {id:"tr10",cat:"travel",ru:"Был в Лос-Анджелесе",en:"Been to Los Angeles", langOnly:"en"},
-    {id:"tr11",cat:"travel",ru:"Был в Ванкувере",en:"Been to Vancouver", langOnly:"en"},
-    // Travel (all)
-    {id:"tr12",cat:"travel",ru:"Был в Европе",en:"Been to Europe"},
-    {id:"tr13",cat:"travel",ru:"Был в Азии",en:"Been to Asia"},
-    {id:"tr14",cat:"travel",ru:"Был в Океании",en:"Been to Oceania"},
-    {id:"tr15",cat:"travel",ru:"Был в Австралии",en:"Been to Australia"},
-    {id:"tr16",cat:"travel",ru:"Был в Африке",en:"Been to Africa"},
-    {id:"tr17",cat:"travel",ru:"Был в Северной Америке",en:"Been to North America"},
-    {id:"tr18",cat:"travel",ru:"Был в Южной Америке",en:"Been to South America"},
+    // Travel
+    {id:"tr1",cat:"travel",ru:"Был в Москве",en:"Been to Moscow", langOnly:"ru"},
+    {id:"tr2",cat:"travel",ru:"Был в Казане",en:"Been to Kazan", langOnly:"ru"},
+    {id:"tr3",cat:"travel",ru:"Был в Санкт-Петербурге",en:"Been to Saint Petersburg", langOnly:"ru"},
+    {id:"tr4",cat:"travel",ru:"Был в Нижнем Новгороде",en:"Been to Nizhny Novgorod", langOnly:"ru"},
+    {id:"tr5",cat:"travel",ru:"Был в Сочи",en:"Been to Sochi", langOnly:"ru"},
+    {id:"tr6",cat:"travel",ru:"Был в Крыму",en:"Been to Crimea", langOnly:"ru"},
+    {id:"tr7",cat:"travel",ru:"Был в Архипо-Осиповке",en:"Been to Arkhipo-Osipovka", langOnly:"ru"},
+    {id:"tr8",cat:"travel",ru:"Был на Байкале",en:"Been to Baikal", langOnly:"ru"},
+    {id:"tr9",cat:"travel",ru:"Был в Карелии",en:"Been to Karelia", langOnly:"ru"},
+    {id:"tr10",cat:"travel",ru:"Был на Алтае",en:"Been to Altai", langOnly:"ru"},
+    {id:"tr11",cat:"travel",ru:"Был во Владивостоке",en:"Been to Vladivostok", langOnly:"ru"},
+    {id:"tr12",cat:"travel",ru:"Был в Нью-Йорке",en:"Been to New York", langOnly:"en"},
+    {id:"tr13",cat:"travel",ru:"Был в Лондоне",en:"Been to London", langOnly:"en"},
+    {id:"tr14",cat:"travel",ru:"Был в Вашингтоне",en:"Been to Washington, D.C.", langOnly:"en"},
+    {id:"tr15",cat:"travel",ru:"Был в Эдинбурге",en:"Been to Edinburgh", langOnly:"en"},
+    {id:"tr16",cat:"travel",ru:"Был в Сан-Франциско",en:"Been to San Francisco", langOnly:"en"},
+    {id:"tr17",cat:"travel",ru:"Был в Оттаве",en:"Been to Ottawa", langOnly:"en"},
+    {id:"tr18",cat:"travel",ru:"Был в Лос-Анджелесе",en:"Been to Los Angeles", langOnly:"en"},
+    {id:"tr19",cat:"travel",ru:"Был в Ванкувере",en:"Been to Vancouver", langOnly:"en"},
+    {id:"tr20",cat:"travel",ru:"Был в Европе",en:"Been to Europe"},
+    {id:"tr21",cat:"travel",ru:"Был в Азии",en:"Been to Asia"},
+    {id:"tr22",cat:"travel",ru:"Был в Океании",en:"Been to Oceania"},
+    {id:"tr23",cat:"travel",ru:"Был в Австралии",en:"Been to Australia"},
+    {id:"tr24",cat:"travel",ru:"Был в Африке",en:"Been to Africa"},
+    {id:"tr25",cat:"travel",ru:"Был в Северной Америке",en:"Been to North America"},
+    {id:"tr26",cat:"travel",ru:"Был в Южной Америке",en:"Been to South America"},
 
     // Transport
     {id:"t1",cat:"transport",ru:"Летал на самолёте",en:"Flown on a plane"},
@@ -730,24 +745,38 @@
     {id:"t5",cat:"transport",ru:"Ездил в автомобиле",en:"Ridden in a car"},
     {id:"t6",cat:"transport",ru:"Ездил в поезде",en:"Ridden a train"},
 
-    // Languages (added RU-specific)
-    {id:"l1",cat:"languages",ru:"Выучил русский",en:"Learned Russian"},
-    {id:"l2",cat:"languages",ru:"Выучил английский",en:"Learned English"},
-    {id:"l3",cat:"languages",ru:"Выучил испанский",en:"Learned Spanish"},
-    {id:"l4",cat:"languages",ru:"Выучил немецкий",en:"Learned German"},
-    {id:"l5",cat:"languages",ru:"Выучил французский",en:"Learned French"},
-    {id:"l6",cat:"languages",ru:"Выучил японский",en:"Learned Japanese"},
-    {id:"l7",cat:"languages",ru:"Выучил арабский",en:"Learned Arabic"},
-    {id:"l8",cat:"languages",ru:"Выучил португальский",en:"Learned Portuguese"},
-    {id:"l9",cat:"languages",ru:"Выучил итальянский",en:"Learned Italian"},
-    {id:"l10",cat:"languages",ru:"Выучил китайский",en:"Learned Chinese"},
-    {id:"l11",cat:"languages",ru:"Выучил татарский",en:"Learned Tatar", langOnly:"ru"},
-    {id:"l12",cat:"languages",ru:"Выучил башкирский",en:"Learned Bashkir", langOnly:"ru"},
-    {id:"l13",cat:"languages",ru:"Выучил чеченский",en:"Learned Chechen", langOnly:"ru"},
-    {id:"l14",cat:"languages",ru:"Выучил бурятский",en:"Learned Buryat", langOnly:"ru"},
-    {id:"l15",cat:"languages",ru:"Выучил якутский",en:"Learned Yakut", langOnly:"ru"},
+    // Languages (added many new languages)
+    {id:"lang1",cat:"languages",ru:"Выучил русский",en:"Learned Russian"},
+    {id:"lang2",cat:"languages",ru:"Выучил английский",en:"Learned English"},
+    {id:"lang3",cat:"languages",ru:"Выучил испанский",en:"Learned Spanish"},
+    {id:"lang4",cat:"languages",ru:"Выучил немецкий",en:"Learned German"},
+    {id:"lang5",cat:"languages",ru:"Выучил французский",en:"Learned French"},
+    {id:"lang6",cat:"languages",ru:"Выучил японский",en:"Learned Japanese"},
+    {id:"lang7",cat:"languages",ru:"Выучил арабский",en:"Learned Arabic"},
+    {id:"lang8",cat:"languages",ru:"Выучил португальский",en:"Learned Portuguese"},
+    {id:"lang9",cat:"languages",ru:"Выучил итальянский",en:"Learned Italian"},
+    {id:"lang10",cat:"languages",ru:"Выучил китайский",en:"Learned Chinese"},
+    {id:"lang11",cat:"languages",ru:"Выучил татарский",en:"Learned Tatar", langOnly:"ru"},
+    {id:"lang12",cat:"languages",ru:"Выучил башкирский",en:"Learned Bashkir", langOnly:"ru"},
+    {id:"lang13",cat:"languages",ru:"Выучил чеченский",en:"Learned Chechen", langOnly:"ru"},
+    {id:"lang14",cat:"languages",ru:"Выучил бурятский",en:"Learned Buryat", langOnly:"ru"},
+    {id:"lang15",cat:"languages",ru:"Выучил якутский",en:"Learned Yakut", langOnly:"ru"},
+    {id:"lang16",cat:"languages",ru:"Выучил турецкий",en:"Learned Turkish"},
+    {id:"lang17",cat:"languages",ru:"Выучил хинди",en:"Learned Hindi"},
+    {id:"lang18",cat:"languages",ru:"Выучил нидерландский",en:"Learned Dutch"},
+    {id:"lang19",cat:"languages",ru:"Выучил казахский",en:"Learned Kazakh"},
+    {id:"lang20",cat:"languages",ru:"Выучил латынь",en:"Learned Latin"},
+    {id:"lang21",cat:"languages",ru:"Выучил греческий",en:"Learned Greek"},
+    {id:"lang22",cat:"languages",ru:"Выучил украинский",en:"Learned Ukrainian"},
+    {id:"lang23",cat:"languages",ru:"Выучил польский",en:"Learned Polish"},
+    {id:"lang24",cat:"languages",ru:"Выучил белорусский",en:"Learned Belarusian"},
+    {id:"lang25",cat:"languages",ru:"Выучил шведский",en:"Learned Swedish"},
+    {id:"lang26",cat:"languages",ru:"Выучил иврит",en:"Learned Hebrew"},
+    {id:"lang27",cat:"languages",ru:"Выучил индонезийский",en:"Learned Indonesian"},
+    {id:"lang28",cat:"languages",ru:"Выучил вьетнамский",en:"Learned Vietnamese"},
+    {id:"lang29",cat:"languages",ru:"Выучил корейский",en:"Learned Korean"},
 
-    // Food (all meat moved here, added new items)
+    // Food (added new items)
     {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
     {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
     {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
@@ -758,18 +787,22 @@
     {id:"f8",cat:"food",ru:"Ел чёрную икру",en:"Eaten black caviar"},
     {id:"f9",cat:"food",ru:"Ел экзотические фрукты",en:"Eaten exotic fruits"},
     {id:"f10",cat:"food",ru:"Ловил рыбу",en:"Gone fishing"},
-    // Meat items (moved from meat category)
-    {id:"f11",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
-    {id:"f12",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
-    {id:"f13",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
-    {id:"f14",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
-    {id:"f15",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
-    {id:"f16",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
-    {id:"f17",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
-    {id:"f18",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
-    {id:"f19",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
+    {id:"f11",cat:"food",ru:"Ел шаурму",en:"Eaten shawarma"},
+    {id:"f12",cat:"food",ru:"Ел бургер",en:"Eaten a burger"},
+    {id:"f13",cat:"food",ru:"Ел картошку фри",en:"Eaten french fries"},
+    {id:"f14",cat:"food",ru:"Ел сладкую вату",en:"Eaten cotton candy"},
+    // Meat items
+    {id:"f15",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
+    {id:"f16",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
+    {id:"f17",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
+    {id:"f18",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
+    {id:"f19",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
+    {id:"f20",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
+    {id:"f21",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
+    {id:"f22",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
+    {id:"f23",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
 
-    // Drinks (moved alcohol here, added dependencies)
+    // Drinks
     {id:"d1",cat:"drinks",ru:"Курил",en:"Smoked"},
     {id:"d2",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
     {id:"d2a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d2"},
@@ -779,13 +812,13 @@
     {id:"d3",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
     {id:"d4",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
 
-    // Water bodies
+    // Water
     {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
     {id:"w2",cat:"water",ru:"Был на речке",en:"Been to a river"},
     {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
     {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"},
 
-    // Adult category (18+)
+    // Adult
     {id:"a1",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
     {id:"a2",cat:"adult",ru:"Целовался",en:"Kissed someone", adultOnly:true},
     {id:"a3",cat:"adult",ru:"Занимался сексом",en:"Had sex", adultOnly:true},
@@ -802,7 +835,7 @@
     {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
     {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
 
-    // Entertainment (new category)
+    // Entertainment (added new games)
     {id:"e1",cat:"entertainment",ru:"Играл в видеоигры",en:"Played video games"},
     {id:"e1a",cat:"entertainment",ru:"  CS:GO 2",en:"  CS:GO 2", dependsOn:"e1"},
     {id:"e1b",cat:"entertainment",ru:"  Dota 2",en:"  Dota 2", dependsOn:"e1"},
@@ -843,23 +876,32 @@
     {id:"e1ak",cat:"entertainment",ru:"  Subway Surfers",en:"  Subway Surfers", dependsOn:"e1"},
     {id:"e1al",cat:"entertainment",ru:"  Brawl Stars",en:"  Brawl Stars", dependsOn:"e1"},
     {id:"e1am",cat:"entertainment",ru:"  Clash Royale",en:"  Clash Royale", dependsOn:"e1"},
+    {id:"e1an",cat:"entertainment",ru:"  Tanks Blitz",en:"  Tanks Blitz", dependsOn:"e1"},
+    {id:"e1ao",cat:"entertainment",ru:"  World of Tanks Blitz",en:"  World of Tanks Blitz", dependsOn:"e1"},
+    {id:"e1ap",cat:"entertainment",ru:"  Plague Inc",en:"  Plague Inc", dependsOn:"e1"},
+    {id:"e1aq",cat:"entertainment",ru:"  Zenless Zone Zero",en:"  Zenless Zone Zero", dependsOn:"e1"},
+    {id:"e1ar",cat:"entertainment",ru:"  Terraria",en:"  Terraria", dependsOn:"e1"},
+    {id:"e1as",cat:"entertainment",ru:"  Hytale",en:"  Hytale", dependsOn:"e1"},
+    {id:"e1at",cat:"entertainment",ru:"  Shadow Fight 2",en:"  Shadow Fight 2", dependsOn:"e1"},
+    {id:"e1au",cat:"entertainment",ru:"  Shadow Fight 3",en:"  Shadow Fight 3", dependsOn:"e1"},
+    {id:"e1av",cat:"entertainment",ru:"  Shadow Fight: Arena",en:"  Shadow Fight: Arena", dependsOn:"e1"},
     {id:"e2",cat:"entertainment",ru:"Был в аквапарке",en:"Been to a water park"},
     {id:"e3",cat:"entertainment",ru:"Был в парке развлечений",en:"Been to an amusement park"},
     {id:"e4",cat:"entertainment",ru:"Был в Disneyland",en:"Been to Disneyland"},
     {id:"e5",cat:"entertainment",ru:"Был в батутном центре",en:"Been to a trampoline park"}
   ];
 
-  const CAT_ORDER = ["milestones","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","entertainment"];
+  const CAT_ORDER = ["milestones","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","entertainment"];
   const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
   // ===== STATE =====
-  const STORAGE_KEY = "life-passport-state-v3";
+  const STORAGE_KEY = "life-passport-state-v4";
   let state = {
     lang:"ru",
     religion:"none",
     gender:"male",
-    age:"over18",
+    age:"under18",
     theme:"light",
     screenSize:"computer",
     offline:false,
@@ -897,7 +939,6 @@
       if(t.langOnly && t.langOnly !== state.lang) return false;
       if(t.tags && t.tags.some(tag => hide.includes(tag))) return false;
       if(t.dependsOn && !state.done[t.dependsOn]) return false;
-      // Age filter
       if(t.adultOnly && state.age === "under18") return false;
       return true;
     });
@@ -931,7 +972,10 @@
                  .replace(/был/gi,"была")
                  .replace(/мастурбировал/gi,"мастурбировала")
                  .replace(/целовался/gi,"целовалась")
-                 .replace(/занимался/gi,"занималась");
+                 .replace(/занимался/gi,"занималась")
+                 .replace(/сидел/gi,"сидела")
+                 .replace(/получал/gi,"получала")
+                 .replace(/закончил/gi,"закончила");
     }
     return text;
   }
@@ -984,7 +1028,7 @@
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
     const badge = document.getElementById("versionBadge");
-    if(badge) badge.textContent = "V3";
+    if(badge) badge.textContent = "V4";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
@@ -1018,7 +1062,6 @@
       });
       catEl.appendChild(header);
 
-      // Age warning for adult category
       if(catKey === "adult" && state.age === "under18"){
         const warning = document.createElement("div");
         warning.className = "age-warning";
@@ -1053,7 +1096,6 @@
         if(state.gender === "female" && state.lang === "ru") text = getPronoun(text);
         label2.textContent = text;
 
-        // Date picker
         const dateWrap = document.createElement("div");
         dateWrap.className = "task-date";
         const dateInput = document.createElement("input");
@@ -1206,7 +1248,7 @@
   // ===== Export / Import =====
   function exportData(type){
     const data = {
-      version: "V3",
+      version: "V4",
       exportDate: new Date().toISOString(),
       state: state,
       tasks: TASKS
