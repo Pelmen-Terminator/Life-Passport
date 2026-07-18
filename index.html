@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Life Passport V6 — Паспорт жизни</title>
+<title>Life Passport V7 — Паспорт жизни</title>
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -525,7 +525,7 @@
 
   <div class="cover">
     <p class="eyebrow" data-i18n="eyebrow">ЛИЧНЫЙ СПИСОК ДОСТИЖЕНИЙ</p>
-    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V6</span></h1>
+    <h1 data-i18n="title">Паспорт жизни <span id="versionBadge">V7</span></h1>
     <p class="sub" data-i18n="subtitle">Отмечайте то, что уже случилось. Настраивайте под себя.</p>
   </div>
 
@@ -568,23 +568,21 @@
       </div>
     </label>
     <div class="import-area">
+      <div class="row"><span data-i18n="importExport">📦 Импорт / Экспорт</span></div>
       <div class="row">
-        <span data-i18n="importExport">📦 Импорт / Экспорт</span>
-      </div>
-      <div class="row">
-        <span style="font-size:.7rem;opacity:.6;">📥 Импорт</span>
-        <label for="importFileJSON">📄 JSON</label>
+        <span style="font-size:.7rem;opacity:.6;" data-i18n="importLabel">📥 Импорт</span>
+        <label for="importFileJSON" data-i18n="json">📄 JSON</label>
         <input type="file" id="importFileJSON" accept=".json">
-        <label for="importFileCSV">📊 CSV</label>
+        <label for="importFileCSV" data-i18n="csv">📊 CSV</label>
         <input type="file" id="importFileCSV" accept=".csv">
-        <label for="importFilePDF">📄 PDF</label>
+        <label for="importFilePDF" data-i18n="pdf">📄 PDF</label>
         <input type="file" id="importFilePDF" accept=".pdf">
       </div>
       <div class="row">
-        <span style="font-size:.7rem;opacity:.6;">📤 Экспорт</span>
-        <button class="export-btn" id="exportJSON">📄 JSON</button>
-        <button class="export-btn" id="exportCSV">📊 CSV</button>
-        <button class="export-btn" id="exportPDF">📄 PDF</button>
+        <span style="font-size:.7rem;opacity:.6;" data-i18n="exportLabel">📤 Экспорт</span>
+        <button class="export-btn" id="exportJSON" data-i18n="json">📄 JSON</button>
+        <button class="export-btn" id="exportCSV" data-i18n="csv">📊 CSV</button>
+        <button class="export-btn" id="exportPDF" data-i18n="pdf">📄 PDF</button>
       </div>
     </div>
   </div>
@@ -624,6 +622,11 @@
       screenSize:"Размер экрана",
       offlineMode:"Офлайн-режим",
       importExport:"Импорт / Экспорт",
+      importLabel:"Импорт",
+      exportLabel:"Экспорт",
+      json:"JSON",
+      csv:"CSV",
+      pdf:"PDF",
       ageWarning:"Некоторые пункты в этой категории доступны только для пользователей старше 18 лет.",
       genders:{male:"Мужской", female:"Женский"},
       ages:{under18:"Меньше 18", over18:"Больше 18"},
@@ -631,6 +634,7 @@
       cats:{
         milestones:"Жизненные вехи",
         family:"Семья",
+        health:"Здоровье",
         internet:"Интернет",
         tech:"Технологии",
         nature:"Природа",
@@ -639,6 +643,8 @@
         career:"Карьера",
         art:"Искусство",
         psychology:"Психология",
+        politics:"Политика",
+        charity:"Благотворительность",
         travel:"Путешествия",
         purchases:"Покупки",
         languages:"Языки",
@@ -651,7 +657,9 @@
         entertainment:"Развлечения",
         legal:"Право",
         events:"События",
-        transport:"Транспорт"
+        transport:"Транспорт",
+        finance:"Финансы",
+        home:"Дом и быт"
       }
     },
     en:{
@@ -666,6 +674,11 @@
       screenSize:"Screen Size",
       offlineMode:"Offline Mode",
       importExport:"Import / Export",
+      importLabel:"Import",
+      exportLabel:"Export",
+      json:"JSON",
+      csv:"CSV",
+      pdf:"PDF",
       ageWarning:"Some items in this category are only available for users over 18.",
       genders:{male:"Male", female:"Female"},
       ages:{under18:"Under 18", over18:"Over 18"},
@@ -673,6 +686,7 @@
       cats:{
         milestones:"Life Milestones",
         family:"Family",
+        health:"Health",
         internet:"Internet",
         tech:"Technology",
         nature:"Nature",
@@ -681,6 +695,8 @@
         career:"Career",
         art:"Art",
         psychology:"Psychology",
+        politics:"Politics",
+        charity:"Charity",
         travel:"Travel",
         purchases:"Purchases",
         languages:"Languages",
@@ -693,395 +709,881 @@
         entertainment:"Entertainment",
         legal:"Legal",
         events:"Events",
-        transport:"Transportation"
+        transport:"Transportation",
+        finance:"Finance",
+        home:"Home & Living"
       }
     }
   };
 
-  // ===== TASKS V6 =====
+  // ===== HELPER: generate tasks with dependencies =====
+  function dep(id, cat, ru, en, dependsOn, langOnly, adultOnly, tags, genderOnly){
+    const t = {id, cat, ru, en};
+    if(dependsOn) t.dependsOn = dependsOn;
+    if(langOnly) t.langOnly = langOnly;
+    if(adultOnly) t.adultOnly = adultOnly;
+    if(tags) t.tags = tags;
+    if(genderOnly) t.genderOnly = genderOnly;
+    return t;
+  }
+
+  // ===== TASKS V7 (FULL VERSION) =====
   const TASKS = [
-    // Milestones
-    {id:"m1",cat:"milestones",ru:"Получил паспорт",en:"Got a passport"},
-    {id:"m2",cat:"milestones",ru:"Получил водительские права",en:"Got a driver's license"},
-    {id:"m3",cat:"milestones",ru:"Закончил школу",en:"Finished school"},
-    {id:"m3a",cat:"milestones",ru:"  9 классов (Россия)",en:"  9th grade", dependsOn:"m3", langOnly:"ru"},
-    {id:"m3b",cat:"milestones",ru:"  11 классов (Россия)",en:"  11th grade", dependsOn:"m3", langOnly:"ru"},
-    {id:"m3c",cat:"milestones",ru:"  9th grade (US)",en:"  9th grade", dependsOn:"m3", langOnly:"en"},
-    {id:"m3d",cat:"milestones",ru:"  12th grade (US)",en:"  12th grade", dependsOn:"m3", langOnly:"en"},
-    {id:"m4",cat:"milestones",ru:"Закончил колледж",en:"Finished college"},
-    {id:"m5",cat:"milestones",ru:"Закончил университет",en:"Finished university"},
-    {id:"m6",cat:"milestones",ru:"Устроился на первую работу",en:"Got first job"},
-    {id:"m7",cat:"milestones",ru:"Сменил профессию",en:"Changed career"},
-    {id:"m8",cat:"milestones",ru:"Переехал в другой город",en:"Moved to another city"},
-    {id:"m9",cat:"milestones",ru:"Переехал в другую страну",en:"Moved to another country"},
-    {id:"m10",cat:"milestones",ru:"Стал родителем",en:"Became a parent"},
-    {id:"m11",cat:"milestones",ru:"Сыграл свадьбу",en:"Got married"},
-    {id:"m12",cat:"milestones",ru:"Развёлся",en:"Got divorced"},
-    {id:"m13",cat:"milestones",ru:"Вышел на пенсию",en:"Retired"},
-    {id:"m14",cat:"milestones",ru:"Отслужил в армии",en:"Served in the military"},
-    {id:"m15",cat:"milestones",ru:"Побывал на войне",en:"Been to war"},
-    {id:"m16",cat:"milestones",ru:"Был исключён из школы",en:"Expelled from school"},
-    {id:"m17",cat:"milestones",ru:"Был исключён из колледжа",en:"Expelled from college"},
-    {id:"m18",cat:"milestones",ru:"Был исключён из университета",en:"Expelled from university"},
+    // ===== MILESTONES =====
+    dep("m1","milestones","Получил паспорт","Got a passport"),
+    dep("m2","milestones","Получил водительские права","Got a driver's license"),
+    dep("m3","milestones","Закончил школу","Finished school"),
+    dep("m3a","milestones","  9 классов (Россия)","  9th grade (Russia)", "m3", "ru"),
+    dep("m3b","milestones","  11 классов (Россия)","  11th grade (Russia)", "m3", "ru"),
+    dep("m3c","milestones","  9th grade (US)","  9th grade (US)", "m3", "en"),
+    dep("m3d","milestones","  12th grade (US)","  12th grade (US)", "m3", "en"),
+    dep("m4","milestones","Закончил колледж","Finished college"),
+    dep("m5","milestones","Закончил университет","Finished university"),
+    dep("m6","milestones","Устроился на первую работу","Got first job"),
+    dep("m7","milestones","Сменил профессию","Changed career"),
+    dep("m8","milestones","Переехал в другой город","Moved to another city"),
+    dep("m9","milestones","Переехал в другую страну","Moved to another country"),
+    dep("m10","milestones","Стал родителем","Became a parent"),
+    dep("m11","milestones","Сыграл свадьбу","Got married"),
+    dep("m12","milestones","Развёлся","Got divorced"),
+    dep("m13","milestones","Вышел на пенсию","Retired"),
+    dep("m14","milestones","Отслужил в армии","Served in the military"),
+    dep("m15","milestones","Побывал на войне","Been to war"),
+    dep("m16","milestones","Был исключён из школы","Expelled from school"),
+    dep("m17","milestones","Был исключён из колледжа","Expelled from college"),
+    dep("m18","milestones","Был исключён из университета","Expelled from university"),
 
-    // Family
-    {id:"fam1",cat:"family",ru:"Есть отец",en:"Has a father"},
-    {id:"fam2",cat:"family",ru:"Есть мать",en:"Has a mother"},
-    {id:"fam3",cat:"family",ru:"Есть бабушка",en:"Has a grandmother"},
-    {id:"fam4",cat:"family",ru:"Есть дедушка",en:"Has a grandfather"},
-    {id:"fam5",cat:"family",ru:"Есть прабабушка",en:"Has a great-grandmother"},
-    {id:"fam6",cat:"family",ru:"Есть прадедушка",en:"Has a great-grandfather"},
-    {id:"fam7",cat:"family",ru:"Есть брат",en:"Has a brother"},
-    {id:"fam8",cat:"family",ru:"Есть сестра",en:"Has a sister"},
-    {id:"fam9",cat:"family",ru:"Есть близнец",en:"Has a twin"},
-    {id:"fam10",cat:"family",ru:"Есть сводный брат",en:"Has a stepbrother"},
-    {id:"fam11",cat:"family",ru:"Есть сводная сестра",en:"Has a stepsister"},
-    {id:"fam12",cat:"family",ru:"Есть мачеха",en:"Has a stepmother"},
-    {id:"fam13",cat:"family",ru:"Есть отчим",en:"Has a stepfather"},
-    {id:"fam14",cat:"family",ru:"Усыновил ребёнка",en:"Adopted a child"},
-    {id:"fam15",cat:"family",ru:"Воспитывал ребёнка в одиночку",en:"Raised a child alone"},
+    // ===== FAMILY =====
+    dep("fam1","family","Есть отец","Has a father"),
+    dep("fam2","family","Есть мать","Has a mother"),
+    dep("fam3","family","Есть бабушка","Has a grandmother"),
+    dep("fam3a","family","  Бабушка по отцу","  Paternal grandmother", "fam3"),
+    dep("fam3b","family","  Бабушка по матери","  Maternal grandmother", "fam3"),
+    dep("fam3c","family","  Бабушка (жива)","  Grandmother (alive)", "fam3"),
+    dep("fam3d","family","  Бабушка (уже нет)","  Grandmother (deceased)", "fam3"),
+    dep("fam4","family","Есть дедушка","Has a grandfather"),
+    dep("fam4a","family","  Дедушка по отцу","  Paternal grandfather", "fam4"),
+    dep("fam4b","family","  Дедушка по матери","  Maternal grandfather", "fam4"),
+    dep("fam4c","family","  Дедушка (жив)","  Grandfather (alive)", "fam4"),
+    dep("fam4d","family","  Дедушка (уже нет)","  Grandfather (deceased)", "fam4"),
+    dep("fam5","family","Есть прабабушка","Has a great-grandmother"),
+    dep("fam5a","family","  Прабабушка по отцу","  Paternal great-grandmother", "fam5"),
+    dep("fam5b","family","  Прабабушка по матери","  Maternal great-grandmother", "fam5"),
+    dep("fam6","family","Есть прадедушка","Has a great-grandfather"),
+    dep("fam6a","family","  Прадедушка по отцу","  Paternal great-grandfather", "fam6"),
+    dep("fam6b","family","  Прадедушка по матери","  Maternal great-grandfather", "fam6"),
+    dep("fam7","family","Есть брат","Has a brother"),
+    dep("fam7a","family","  Родной брат (по крови)","  Biological brother", "fam7"),
+    dep("fam7b","family","  Сводный брат","  Stepbrother", "fam7"),
+    dep("fam7c","family","  Двоюродный брат","  Cousin (male)", "fam7"),
+    dep("fam7d","family","  Троюродный брат","  Second cousin (male)", "fam7"),
+    dep("fam7e","family","  Брат по отцу","  Paternal brother", "fam7"),
+    dep("fam7f","family","  Брат по матери","  Maternal brother", "fam7"),
+    dep("fam8","family","Есть сестра","Has a sister"),
+    dep("fam8a","family","  Родная сестра (по крови)","  Biological sister", "fam8"),
+    dep("fam8b","family","  Сводная сестра","  Stepsister", "fam8"),
+    dep("fam8c","family","  Двоюродная сестра","  Cousin (female)", "fam8"),
+    dep("fam8d","family","  Троюродная сестра","  Second cousin (female)", "fam8"),
+    dep("fam8e","family","  Сестра по отцу","  Paternal sister", "fam8"),
+    dep("fam8f","family","  Сестра по матери","  Maternal sister", "fam8"),
+    dep("fam9","family","Есть близнец","Has a twin"),
+    dep("fam10","family","Есть мачеха","Has a stepmother"),
+    dep("fam11","family","Есть отчим","Has a stepfather"),
+    dep("fam12","family","Есть тётя","Has an aunt"),
+    dep("fam13","family","Есть дядя","Has an uncle"),
+    dep("fam14","family","Есть крёстный отец","Has a godfather"),
+    dep("fam15","family","Есть крёстная мать","Has a godmother"),
+    dep("fam16","family","Есть приёмные родители","Has adoptive parents"),
+    dep("fam17","family","Есть названный брат/сестра","Has a named brother/sister"),
+    dep("fam18","family","Есть племянник","Has a nephew"),
+    dep("fam19","family","Есть племянница","Has a niece"),
+    dep("fam20","family","Был в роддоме","Been to a maternity hospital"),
+    dep("fam21","family","Присутствовал на родах","Attended childbirth"),
+    dep("fam22","family","Перерезал пуповину","Cut the umbilical cord", null, null, null, null, "male"),
+    dep("fam23","family","Выбирал имя ребёнку","Chose a child's name"),
+    dep("fam24","family","Крестил ребёнка","Baptized a child"),
+    dep("fam25","family","Воспитывал не своего ребёнка","Raised someone else's child"),
+    dep("fam26","family","Содержал пожилых родителей","Supported elderly parents"),
+    dep("fam27","family","Ухаживал за больным родственником","Cared for a sick relative"),
+    dep("fam28","family","Потерял близкого человека","Lost a loved one"),
+    dep("fam29","family","Был на похоронах","Been to a funeral"),
+    dep("fam30","family","Организовал похороны","Organized a funeral"),
+    dep("fam31","family","Получил наследство","Received inheritance"),
+    dep("fam32","family","Усыновил ребёнка","Adopted a child"),
+    dep("fam33","family","Воспитывал ребёнка в одиночку","Raised a child alone"),
 
-    // Internet
-    {id:"int1",cat:"internet",ru:"Зарегистрировался в соцсети",en:"Registered on social media"},
-    {id:"int2",cat:"internet",ru:"Стал вирусным",en:"Went viral"},
-    {id:"int3",cat:"internet",ru:"Создал YouTube канал",en:"Created a YouTube channel"},
-    {id:"int4",cat:"internet",ru:"Создал Telegram канал",en:"Created a Telegram channel"},
-    {id:"int5",cat:"internet",ru:"Заработал первые деньги",en:"Earned first money"},
-    {id:"int6",cat:"internet",ru:"Заработал деньги в интернете",en:"Earned money online"},
-    {id:"int7",cat:"internet",ru:"Купил домен",en:"Bought a domain"},
-    {id:"int8",cat:"internet",ru:"Сделал свой сайт",en:"Made own website"},
+    // ===== HEALTH =====
+    dep("h1","health","Сделал прививку от столбняка","Got a tetanus shot"),
+    dep("h2","health","Сделал прививку от Covid-19","Got a Covid-19 vaccine"),
+    dep("h3","health","Сделал пластическую операцию","Had plastic surgery"),
+    dep("h4","health","Сделал пирсинг","Got a piercing"),
+    dep("h5","health","Сделал татуировку","Got a tattoo"),
 
-    // Technology
-    {id:"tech1",cat:"tech",ru:"Сделал ИИ",en:"Created AI"},
-    {id:"tech2",cat:"tech",ru:"Сделал игру",en:"Made a game"},
-    {id:"tech3",cat:"tech",ru:"Сделал приложение",en:"Made an app"},
-    {id:"tech4",cat:"tech",ru:"Создал компанию",en:"Founded a company"},
-    {id:"tech5",cat:"tech",ru:"Создал корпорацию",en:"Founded a corporation"},
-    {id:"tech6",cat:"tech",ru:"Купил дрон",en:"Bought a drone"},
-    {id:"tech7",cat:"tech",ru:"Купил VR очки",en:"Bought VR glasses"},
-    {id:"tech8",cat:"tech",ru:"Умею пользоваться 3D принтером",en:"Can use 3D printer"},
-    {id:"tech9",cat:"tech",ru:"Отремонтировал технику сам",en:"Fixed tech myself"},
+    // ===== INTERNET =====
+    dep("int1","internet","Зарегистрировался в соцсети","Registered on social media"),
+    dep("int2","internet","Стал вирусным","Went viral"),
+    dep("int3","internet","Создал YouTube канал","Created a YouTube channel"),
+    dep("int4","internet","Создал Telegram канал","Created a Telegram channel"),
+    dep("int5","internet","Заработал первые деньги","Earned first money"),
+    dep("int6","internet","Заработал деньги в интернете","Earned money online"),
+    dep("int7","internet","Купил домен","Bought a domain"),
+    dep("int8","internet","Сделал свой сайт","Made own website"),
 
-    // Nature
-    {id:"nat1",cat:"nature",ru:"Сажал дерево",en:"Planted a tree"},
-    {id:"nat2",cat:"nature",ru:"Сажал цветы",en:"Planted flowers"},
-    {id:"nat3",cat:"nature",ru:"Попал под молнию",en:"Struck by lightning"},
+    // ===== TECHNOLOGY =====
+    dep("tech1","tech","Сделал ИИ","Created AI"),
+    dep("tech2","tech","Сделал игру","Made a game"),
+    dep("tech3","tech","Сделал приложение","Made an app"),
+    dep("tech4","tech","Создал компанию","Founded a company"),
+    dep("tech5","tech","Создал корпорацию","Founded a corporation"),
+    dep("tech6","tech","Купил дрон","Bought a drone"),
+    dep("tech7","tech","Купил VR очки","Bought VR glasses"),
+    dep("tech8","tech","Умею пользоваться 3D принтером","Can use 3D printer"),
+    dep("tech9","tech","Отремонтировал технику сам","Fixed tech myself"),
 
-    // Extreme
-    {id:"ext1",cat:"extreme",ru:"Прыгал с тарзанки",en:"Bungee jumped"},
-    {id:"ext2",cat:"extreme",ru:"Летал на параплане",en:"Flew paraglider"},
-    {id:"ext3",cat:"extreme",ru:"Занимался сёрфингом",en:"Surfed"},
-    {id:"ext4",cat:"extreme",ru:"Катался на квадроцикле",en:"Rode ATV"},
-    {id:"ext5",cat:"extreme",ru:"Умею ездить на велосипеде",en:"Can ride a bike"},
-    {id:"ext6",cat:"extreme",ru:"Умею ездить на самокате",en:"Can ride a scooter"},
-    {id:"ext7",cat:"extreme",ru:"Ночевал у друзей",en:"Slept at friends' place"},
-    {id:"ext8",cat:"extreme",ru:"Ночевал в лесу",en:"Slept in the forest"},
-    {id:"ext9",cat:"extreme",ru:"Занимался скалолазанием",en:"Rock climbed"},
-    {id:"ext10",cat:"extreme",ru:"Спускался в пещеру",en:"Descended into a cave"},
-    {id:"ext11",cat:"extreme",ru:"Плавал с акулами",en:"Swam with sharks"},
-    {id:"ext12",cat:"extreme",ru:"Плавал со скатами",en:"Swam with rays"},
-    {id:"ext13",cat:"extreme",ru:"Кормил диких животных",en:"Fed wild animals"},
+    // ===== NATURE =====
+    dep("nat1","nature","Сажал дерево","Planted a tree"),
+    dep("nat2","nature","Сажал цветы","Planted flowers"),
+    dep("nat3","nature","Попал под молнию","Struck by lightning"),
 
-    // Education
-    {id:"edu1",cat:"education",ru:"Прошёл онлайн курс",en:"Completed online course"},
-    {id:"edu2",cat:"education",ru:"Получил второе образование",en:"Got second education"},
-    {id:"edu3",cat:"education",ru:"Учился за границей",en:"Studied abroad"},
-    {id:"edu4",cat:"education",ru:"Защитил диссертацию",en:"Defended thesis"},
-    {id:"edu5",cat:"education",ru:"Написал книгу",en:"Wrote a book"},
-    {id:"edu6",cat:"education",ru:"Написал статью",en:"Wrote an article"},
-    {id:"edu7",cat:"education",ru:"Получил грант",en:"Got a grant"},
-    {id:"edu8",cat:"education",ru:"Участвовал в олимпиаде",en:"Participated in Olympiad"},
-    {id:"edu9",cat:"education",ru:"Победил в олимпиаде",en:"Won an Olympiad"},
-    {id:"edu10",cat:"education",ru:"Получил Нобелевскую премию",en:"Won Nobel Prize"},
+    // ===== EXTREME =====
+    dep("ext1","extreme","Прыгал с тарзанки","Bungee jumped"),
+    dep("ext2","extreme","Летал на параплане","Flew paraglider"),
+    dep("ext3","extreme","Занимался сёрфингом","Surfed"),
+    dep("ext4","extreme","Катался на квадроцикле","Rode ATV"),
+    dep("ext5","extreme","Умею ездить на велосипеде","Can ride a bike"),
+    dep("ext6","extreme","Умею ездить на самокате","Can ride a scooter"),
+    dep("ext7","extreme","Ночевал у друзей","Slept at friends' place"),
+    dep("ext8","extreme","Ночевал в лесу","Slept in the forest"),
+    dep("ext9","extreme","Занимался скалолазанием","Rock climbed"),
+    dep("ext10","extreme","Спускался в пещеру","Descended into a cave"),
+    dep("ext11","extreme","Плавал с акулами","Swam with sharks"),
+    dep("ext12","extreme","Плавал со скатами","Swam with rays"),
+    dep("ext13","extreme","Кормил диких животных","Fed wild animals"),
+    dep("ext14","extreme","Прыгал с банжи","Bungee jumped (bridge)"),
+    dep("ext15","extreme","Ездил на собачьей упряжке","Rode a dog sled"),
+    dep("ext16","extreme","Катался на оленях","Rode reindeer"),
+    dep("ext17","extreme","Жил в иглу","Lived in an igloo"),
+    dep("ext18","extreme","Пересёк пустыню","Crossed a desert"),
+    dep("ext19","extreme","Пересёк океан на корабле","Crossed an ocean by ship"),
+    dep("ext20","extreme","Путешествовал автостопом","Hitchhiked"),
+    dep("ext21","extreme","Ночевал в аэропорту","Slept in an airport"),
 
-    // Career
-    {id:"car1",cat:"career",ru:"Стал директором",en:"Became a director"},
-    {id:"car2",cat:"career",ru:"Работал на удалёнке",en:"Worked remotely"},
-    {id:"car3",cat:"career",ru:"Работал в ночную смену",en:"Worked night shift"},
+    // ===== EDUCATION =====
+    dep("edu1","education","Прошёл онлайн курс","Completed online course"),
+    dep("edu2","education","Получил второе образование","Got second education"),
+    dep("edu3","education","Учился за границей","Studied abroad"),
+    dep("edu4","education","Защитил диссертацию","Defended thesis"),
+    dep("edu5","education","Написал книгу","Wrote a book"),
+    dep("edu6","education","Написал статью","Wrote an article"),
+    dep("edu7","education","Получил грант","Got a grant"),
+    dep("edu8","education","Участвовал в олимпиаде","Participated in Olympiad"),
+    dep("edu9","education","Победил в олимпиаде","Won an Olympiad"),
+    dep("edu10","education","Получил Нобелевскую премию","Won Nobel Prize"),
 
-    // Art
-    {id:"art1",cat:"art",ru:"Рисовал картину",en:"Painted a picture"},
-    {id:"art2",cat:"art",ru:"Создавал музыку",en:"Created music"},
-    {id:"art3",cat:"art",ru:"Пел",en:"Sang"},
-    {id:"art4",cat:"art",ru:"Выступал на большой сцене",en:"Performed on big stage"},
-    {id:"art5",cat:"art",ru:"Пел в караоке",en:"Sang karaoke"},
-    {id:"art6",cat:"art",ru:"Снимал свои видео",en:"Shot own videos"},
-    {id:"art7",cat:"art",ru:"Монтировал видео",en:"Edited videos"},
-    {id:"art8",cat:"art",ru:"Писал стихи",en:"Wrote poetry"},
-    {id:"art9",cat:"art",ru:"Писал прозы",en:"Wrote prose"},
-    {id:"art10",cat:"art",ru:"Делал поделки своими руками",en:"Made crafts"},
+    // ===== CAREER =====
+    dep("car1","career","Стал директором","Became a director"),
+    dep("car2","career","Работал на удалёнке","Worked remotely"),
+    dep("car3","career","Работал в ночную смену","Worked night shift"),
 
-    // Psychology
-    {id:"psy1",cat:"psychology",ru:"Прошёл психотерапию",en:"Had psychotherapy"},
-    {id:"psy2",cat:"psychology",ru:"Простил обидчика",en:"Forgave offender"},
-    {id:"psy3",cat:"psychology",ru:"Избавился от страха",en:"Overcame fear"},
-    {id:"psy4",cat:"psychology",ru:"Избавился от фобии",en:"Overcame phobia"},
+    // ===== ART =====
+    dep("art1","art","Рисовал картину","Painted a picture"),
+    dep("art1a","art","  Рисовал маслом","  Painted in oil", "art1"),
+    dep("art1b","art","  Рисовал акварелью","  Painted in watercolor", "art1"),
+    dep("art1c","art","  Рисовал карандашом","  Drew with pencil", "art1"),
+    dep("art1d","art","  Рисовал на планшете","  Drew on tablet", "art1"),
+    dep("art1e","art","  Рисовал на стене (граффити)","  Drew on wall (graffiti)", "art1"),
+    dep("art1f","art","  Рисовал на асфальте (мелом)","  Drew on asphalt (chalk)", "art1"),
+    dep("art1g","art","  Рисовал на ткани (батик)","  Drew on fabric (batik)", "art1"),
+    dep("art1h","art","  Рисовал в 3D","  Drew in 3D", "art1"),
+    dep("art1i","art","  Рисовал анимацию","  Drew animation", "art1"),
+    dep("art2","art","Создавал музыку","Created music"),
+    dep("art3","art","Пел","Sang"),
+    dep("art3a","art","  Пел в караоке","  Sang karaoke", "art3"),
+    dep("art3b","art","  Пел на публике","  Sang in public", "art3"),
+    dep("art3c","art","  Пел в хоре","  Sang in a choir", "art3"),
+    dep("art3d","art","  Пел в группе","  Sang in a band", "art3"),
+    dep("art3e","art","  Пел сольно","  Sang solo", "art3"),
+    dep("art3f","art","  Пел под гитару","  Sang with guitar", "art3"),
+    dep("art3g","art","  Пел под фортепиано","  Sang with piano", "art3"),
+    dep("art3h","art","  Пел на концерте","  Sang at a concert", "art3"),
+    dep("art3i","art","  Пел на свадьбе","  Sang at a wedding", "art3"),
+    dep("art3j","art","  Пел в душе","  Sang in the shower", "art3"),
+    dep("art4","art","Выступал на большой сцене","Performed on big stage"),
+    dep("art5","art","Снимал свои видео","Shot own videos"),
+    dep("art6","art","Монтировал видео","Edited videos"),
+    dep("art7","art","Писал стихи","Wrote poetry"),
+    dep("art8","art","Писал прозы","Wrote prose"),
+    dep("art9","art","Делал поделки своими руками","Made crafts"),
 
-    // Legal
-    {id:"l1",cat:"legal",ru:"Получал штраф",en:"Got a fine"},
-    {id:"l2",cat:"legal",ru:"Сидел в тюрьме",en:"Been to prison"},
+    // ===== PSYCHOLOGY =====
+    dep("psy1","psychology","Прошёл психотерапию","Had psychotherapy"),
+    dep("psy2","psychology","Простил обидчика","Forgave offender"),
+    dep("psy3","psychology","Избавился от страха","Overcame fear"),
+    dep("psy4","psychology","Избавился от фобии","Overcame phobia"),
 
-    // Pets
-    {id:"pet1",cat:"pets",ru:"Завёл собаку",en:"Got a dog"},
-    {id:"pet2",cat:"pets",ru:"Завёл кошку",en:"Got a cat"},
-    {id:"pet3",cat:"pets",ru:"Завёл хомяка",en:"Got a hamster"},
-    {id:"pet4",cat:"pets",ru:"Завёл змею",en:"Got a snake"},
-    {id:"pet5",cat:"pets",ru:"Завёл попугая",en:"Got a parrot"},
-    {id:"pet6",cat:"pets",ru:"Завёл голубя",en:"Got a pigeon"},
-    {id:"pet7",cat:"pets",ru:"Завёл свинку (мини-пига)",en:"Got a mini-pig"},
-    {id:"pet8",cat:"pets",ru:"Завёл утку",en:"Got a duck"},
-    {id:"pet9",cat:"pets",ru:"Завёл кролика",en:"Got a rabbit"},
-    {id:"pet10",cat:"pets",ru:"Завёл енота",en:"Got a raccoon"},
-    {id:"pet11",cat:"pets",ru:"Завёл ворону",en:"Got a crow"},
-    {id:"pet12",cat:"pets",ru:"Завёл рыбок",en:"Got fish"},
+    // ===== POLITICS =====
+    dep("pol1","politics","Был на митинге","Been to a rally"),
+    dep("pol2","politics","Стал мэром","Became a mayor"),
+    dep("pol3","politics","Стал депутатом","Became a deputy"),
+    dep("pol4","politics","Стал президентом","Became a president"),
 
-    // Purchases
-    {id:"p1",cat:"purchases",ru:"Купил телефон",en:"Bought a phone"},
-    {id:"p1a",cat:"purchases",ru:"  iPhone",en:"  iPhone", dependsOn:"p1"},
-    {id:"p1b",cat:"purchases",ru:"  Samsung",en:"  Samsung", dependsOn:"p1"},
-    {id:"p1c",cat:"purchases",ru:"  Huawei",en:"  Huawei", dependsOn:"p1"},
-    {id:"p1d",cat:"purchases",ru:"  Xiaomi",en:"  Xiaomi", dependsOn:"p1"},
-    {id:"p1e",cat:"purchases",ru:"  Realme",en:"  Realme", dependsOn:"p1"},
-    {id:"p1f",cat:"purchases",ru:"  Nokia",en:"  Nokia", dependsOn:"p1"},
-    {id:"p1g",cat:"purchases",ru:"  Redmi",en:"  Redmi", dependsOn:"p1"},
-    {id:"p2",cat:"purchases",ru:"Купил планшет",en:"Bought a tablet"},
-    {id:"p2a",cat:"purchases",ru:"  iPad",en:"  iPad", dependsOn:"p2"},
-    {id:"p2b",cat:"purchases",ru:"  Samsung",en:"  Samsung", dependsOn:"p2"},
-    {id:"p2c",cat:"purchases",ru:"  Microsoft",en:"  Microsoft", dependsOn:"p2"},
-    {id:"p2d",cat:"purchases",ru:"  Huawei",en:"  Huawei", dependsOn:"p2"},
-    {id:"p2e",cat:"purchases",ru:"  Xiaomi",en:"  Xiaomi", dependsOn:"p2"},
-    {id:"p2f",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p2"},
-    {id:"p3",cat:"purchases",ru:"Купил ноутбук",en:"Bought a laptop"},
-    {id:"p3a",cat:"purchases",ru:"  Apple",en:"  Apple", dependsOn:"p3"},
-    {id:"p3b",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p3"},
-    {id:"p3c",cat:"purchases",ru:"  HP",en:"  HP", dependsOn:"p3"},
-    {id:"p3d",cat:"purchases",ru:"  Dell",en:"  Dell", dependsOn:"p3"},
-    {id:"p3e",cat:"purchases",ru:"  Asus",en:"  Asus", dependsOn:"p3"},
-    {id:"p3f",cat:"purchases",ru:"  Acer",en:"  Acer", dependsOn:"p3"},
-    {id:"p4",cat:"purchases",ru:"Купил компьютер",en:"Bought a desktop"},
-    {id:"p4a",cat:"purchases",ru:"  Apple Mac",en:"  Apple Mac", dependsOn:"p4"},
-    {id:"p4b",cat:"purchases",ru:"  Dell",en:"  Dell", dependsOn:"p4"},
-    {id:"p4c",cat:"purchases",ru:"  HP",en:"  HP", dependsOn:"p4"},
-    {id:"p4d",cat:"purchases",ru:"  Lenovo",en:"  Lenovo", dependsOn:"p4"},
-    {id:"p5",cat:"purchases",ru:"Купил автомобиль",en:"Bought a car"},
-    {id:"p5a",cat:"purchases",ru:"  Toyota",en:"  Toyota", dependsOn:"p5"},
-    {id:"p5b",cat:"purchases",ru:"  Volkswagen",en:"  Volkswagen", dependsOn:"p5"},
-    {id:"p5c",cat:"purchases",ru:"  BMW",en:"  BMW", dependsOn:"p5"},
-    {id:"p5d",cat:"purchases",ru:"  BYD",en:"  BYD", dependsOn:"p5"},
-    {id:"p5e",cat:"purchases",ru:"  Hyundai",en:"  Hyundai", dependsOn:"p5"},
-    {id:"p5f",cat:"purchases",ru:"  Honda",en:"  Honda", dependsOn:"p5"},
-    {id:"p5g",cat:"purchases",ru:"  Nissan",en:"  Nissan", dependsOn:"p5"},
-    {id:"p5h",cat:"purchases",ru:"  Kia",en:"  Kia", dependsOn:"p5"},
-    {id:"p5i",cat:"purchases",ru:"  Chevrolet",en:"  Chevrolet", dependsOn:"p5"},
-    {id:"p5j",cat:"purchases",ru:"  Suzuki",en:"  Suzuki", dependsOn:"p5"},
-    {id:"p5k",cat:"purchases",ru:"  Lada",en:"  Lada", dependsOn:"p5"},
-    {id:"p5l",cat:"purchases",ru:"  Haval",en:"  Haval", dependsOn:"p5"},
-    {id:"p5m",cat:"purchases",ru:"  Tenet",en:"  Tenet", dependsOn:"p5"},
-    {id:"p5n",cat:"purchases",ru:"  Lamborghini",en:"  Lamborghini", dependsOn:"p5"},
-    {id:"p5o",cat:"purchases",ru:"  Rolls-Royce",en:"  Rolls-Royce", dependsOn:"p5"},
-    {id:"p5p",cat:"purchases",ru:"  Bugatti",en:"  Bugatti", dependsOn:"p5"},
-    {id:"p6",cat:"purchases",ru:"Купил квартиру",en:"Bought an apartment"},
-    {id:"p7",cat:"purchases",ru:"Купил дом",en:"Bought a house"},
-    {id:"p8",cat:"purchases",ru:"Купил самолёт",en:"Bought a plane"},
+    // ===== CHARITY =====
+    dep("ch1","charity","Делал пожертвования","Made donations"),
+    dep("ch2","charity","Сдавал кровь","Donated blood"),
+    dep("ch3","charity","Был донором органов","Was an organ donor"),
+    dep("ch4","charity","Помогал бездомным","Helped homeless"),
+    dep("ch5","charity","Помогал в приюте","Helped at a shelter"),
+    dep("ch6","charity","Помогал ветеранам","Helped veterans"),
+    dep("ch7","charity","Помогал пожилым людям","Helped elderly"),
 
-    // Travel
-    {id:"tr1",cat:"travel",ru:"Был в Москве",en:"Been to Moscow", langOnly:"ru"},
-    {id:"tr2",cat:"travel",ru:"Был в Казане",en:"Been to Kazan", langOnly:"ru"},
-    {id:"tr3",cat:"travel",ru:"Был в Санкт-Петербурге",en:"Been to Saint Petersburg", langOnly:"ru"},
-    {id:"tr4",cat:"travel",ru:"Был в Нижнем Новгороде",en:"Been to Nizhny Novgorod", langOnly:"ru"},
-    {id:"tr5",cat:"travel",ru:"Был в Сочи",en:"Been to Sochi", langOnly:"ru"},
-    {id:"tr6",cat:"travel",ru:"Был в Крыму",en:"Been to Crimea", langOnly:"ru"},
-    {id:"tr7",cat:"travel",ru:"Был в Архипо-Осиповке",en:"Been to Arkhipo-Osipovka", langOnly:"ru"},
-    {id:"tr8",cat:"travel",ru:"Был на Байкале",en:"Been to Baikal", langOnly:"ru"},
-    {id:"tr9",cat:"travel",ru:"Был в Карелии",en:"Been to Karelia", langOnly:"ru"},
-    {id:"tr10",cat:"travel",ru:"Был на Алтае",en:"Been to Altai", langOnly:"ru"},
-    {id:"tr11",cat:"travel",ru:"Был во Владивостоке",en:"Been to Vladivostok", langOnly:"ru"},
-    {id:"tr12",cat:"travel",ru:"Был в Нью-Йорке",en:"Been to New York", langOnly:"en"},
-    {id:"tr13",cat:"travel",ru:"Был в Лондоне",en:"Been to London", langOnly:"en"},
-    {id:"tr14",cat:"travel",ru:"Был в Вашингтоне",en:"Been to Washington, D.C.", langOnly:"en"},
-    {id:"tr15",cat:"travel",ru:"Был в Эдинбурге",en:"Been to Edinburgh", langOnly:"en"},
-    {id:"tr16",cat:"travel",ru:"Был в Сан-Франциско",en:"Been to San Francisco", langOnly:"en"},
-    {id:"tr17",cat:"travel",ru:"Был в Оттаве",en:"Been to Ottawa", langOnly:"en"},
-    {id:"tr18",cat:"travel",ru:"Был в Лос-Анджелесе",en:"Been to Los Angeles", langOnly:"en"},
-    {id:"tr19",cat:"travel",ru:"Был в Ванкувере",en:"Been to Vancouver", langOnly:"en"},
-    {id:"tr20",cat:"travel",ru:"Был в Европе",en:"Been to Europe"},
-    {id:"tr21",cat:"travel",ru:"Был в Азии",en:"Been to Asia"},
-    {id:"tr22",cat:"travel",ru:"Был в Океании",en:"Been to Oceania"},
-    {id:"tr23",cat:"travel",ru:"Был в Австралии",en:"Been to Australia"},
-    {id:"tr24",cat:"travel",ru:"Был в Африке",en:"Been to Africa"},
-    {id:"tr25",cat:"travel",ru:"Был в Северной Америке",en:"Been to North America"},
-    {id:"tr26",cat:"travel",ru:"Был в Южной Америке",en:"Been to South America"},
+    // ===== LEGAL =====
+    dep("l1","legal","Получал штраф","Got a fine"),
+    dep("l2","legal","Сидел в тюрьме","Been to prison"),
 
-    // Transport
-    {id:"t1",cat:"transport",ru:"Летал на самолёте",en:"Flown on a plane"},
-    {id:"t2",cat:"transport",ru:"Летал на вертолёте",en:"Flown on a helicopter"},
-    {id:"t3",cat:"transport",ru:"Плавал на лайнере",en:"Sailed on a cruise liner"},
-    {id:"t4",cat:"transport",ru:"Плавал на катере",en:"Ridden a speedboat"},
-    {id:"t5",cat:"transport",ru:"Ездил в автомобиле",en:"Ridden in a car"},
-    {id:"t6",cat:"transport",ru:"Ездил в поезде",en:"Ridden a train"},
+    // ===== PETS =====
+    dep("pet1","pets","Завёл собаку","Got a dog"),
+    dep("pet2","pets","Завёл кошку","Got a cat"),
+    dep("pet3","pets","Завёл хомяка","Got a hamster"),
+    dep("pet4","pets","Завёл змею","Got a snake"),
+    dep("pet5","pets","Завёл попугая","Got a parrot"),
+    dep("pet6","pets","Завёл голубя","Got a pigeon"),
+    dep("pet7","pets","Завёл свинку (мини-пига)","Got a mini-pig"),
+    dep("pet8","pets","Завёл утку","Got a duck"),
+    dep("pet9","pets","Завёл кролика","Got a rabbit"),
+    dep("pet10","pets","Завёл енота","Got a raccoon"),
+    dep("pet11","pets","Завёл ворону","Got a crow"),
+    dep("pet12","pets","Завёл рыбок","Got fish"),
 
-    // Languages
-    {id:"lang1",cat:"languages",ru:"Выучил русский",en:"Learned Russian"},
-    {id:"lang2",cat:"languages",ru:"Выучил английский",en:"Learned English"},
-    {id:"lang3",cat:"languages",ru:"Выучил испанский",en:"Learned Spanish"},
-    {id:"lang4",cat:"languages",ru:"Выучил немецкий",en:"Learned German"},
-    {id:"lang5",cat:"languages",ru:"Выучил французский",en:"Learned French"},
-    {id:"lang6",cat:"languages",ru:"Выучил японский",en:"Learned Japanese"},
-    {id:"lang7",cat:"languages",ru:"Выучил арабский",en:"Learned Arabic"},
-    {id:"lang8",cat:"languages",ru:"Выучил португальский",en:"Learned Portuguese"},
-    {id:"lang9",cat:"languages",ru:"Выучил итальянский",en:"Learned Italian"},
-    {id:"lang10",cat:"languages",ru:"Выучил китайский",en:"Learned Chinese"},
-    {id:"lang11",cat:"languages",ru:"Выучил татарский",en:"Learned Tatar", langOnly:"ru"},
-    {id:"lang12",cat:"languages",ru:"Выучил башкирский",en:"Learned Bashkir", langOnly:"ru"},
-    {id:"lang13",cat:"languages",ru:"Выучил чеченский",en:"Learned Chechen", langOnly:"ru"},
-    {id:"lang14",cat:"languages",ru:"Выучил бурятский",en:"Learned Buryat", langOnly:"ru"},
-    {id:"lang15",cat:"languages",ru:"Выучил якутский",en:"Learned Yakut", langOnly:"ru"},
-    {id:"lang16",cat:"languages",ru:"Выучил турецкий",en:"Learned Turkish"},
-    {id:"lang17",cat:"languages",ru:"Выучил хинди",en:"Learned Hindi"},
-    {id:"lang18",cat:"languages",ru:"Выучил нидерландский",en:"Learned Dutch"},
-    {id:"lang19",cat:"languages",ru:"Выучил казахский",en:"Learned Kazakh"},
-    {id:"lang20",cat:"languages",ru:"Выучил латынь",en:"Learned Latin"},
-    {id:"lang21",cat:"languages",ru:"Выучил греческий",en:"Learned Greek"},
-    {id:"lang22",cat:"languages",ru:"Выучил украинский",en:"Learned Ukrainian"},
-    {id:"lang23",cat:"languages",ru:"Выучил польский",en:"Learned Polish"},
-    {id:"lang24",cat:"languages",ru:"Выучил белорусский",en:"Learned Belarusian"},
-    {id:"lang25",cat:"languages",ru:"Выучил шведский",en:"Learned Swedish"},
-    {id:"lang26",cat:"languages",ru:"Выучил иврит",en:"Learned Hebrew"},
-    {id:"lang27",cat:"languages",ru:"Выучил индонезийский",en:"Learned Indonesian"},
-    {id:"lang28",cat:"languages",ru:"Выучил вьетнамский",en:"Learned Vietnamese"},
-    {id:"lang29",cat:"languages",ru:"Выучил корейский",en:"Learned Korean"},
+    // ===== PURCHASES =====
+    dep("p1","purchases","Купил телефон","Bought a phone"),
+    dep("p1a","purchases","  iPhone","  iPhone", "p1"),
+    dep("p1b","purchases","  Samsung","  Samsung", "p1"),
+    dep("p1c","purchases","  Huawei","  Huawei", "p1"),
+    dep("p1d","purchases","  Xiaomi","  Xiaomi", "p1"),
+    dep("p1e","purchases","  Realme","  Realme", "p1"),
+    dep("p1f","purchases","  Nokia","  Nokia", "p1"),
+    dep("p1g","purchases","  Redmi","  Redmi", "p1"),
+    dep("p2","purchases","Купил планшет","Bought a tablet"),
+    dep("p2a","purchases","  iPad","  iPad", "p2"),
+    dep("p2b","purchases","  Samsung","  Samsung", "p2"),
+    dep("p2c","purchases","  Microsoft","  Microsoft", "p2"),
+    dep("p2d","purchases","  Huawei","  Huawei", "p2"),
+    dep("p2e","purchases","  Xiaomi","  Xiaomi", "p2"),
+    dep("p2f","purchases","  Lenovo","  Lenovo", "p2"),
+    dep("p3","purchases","Купил ноутбук","Bought a laptop"),
+    dep("p3a","purchases","  Apple","  Apple", "p3"),
+    dep("p3b","purchases","  Lenovo","  Lenovo", "p3"),
+    dep("p3c","purchases","  HP","  HP", "p3"),
+    dep("p3d","purchases","  Dell","  Dell", "p3"),
+    dep("p3e","purchases","  Asus","  Asus", "p3"),
+    dep("p3f","purchases","  Acer","  Acer", "p3"),
+    dep("p4","purchases","Купил компьютер","Bought a desktop"),
+    dep("p4a","purchases","  Apple Mac","  Apple Mac", "p4"),
+    dep("p4b","purchases","  Dell","  Dell", "p4"),
+    dep("p4c","purchases","  HP","  HP", "p4"),
+    dep("p4d","purchases","  Lenovo","  Lenovo", "p4"),
+    dep("p5","purchases","Купил автомобиль","Bought a car"),
+    dep("p5a","purchases","  Toyota","  Toyota", "p5"),
+    dep("p5b","purchases","  Volkswagen","  Volkswagen", "p5"),
+    dep("p5c","purchases","  BMW","  BMW", "p5"),
+    dep("p5d","purchases","  BYD","  BYD", "p5"),
+    dep("p5e","purchases","  Hyundai","  Hyundai", "p5"),
+    dep("p5f","purchases","  Honda","  Honda", "p5"),
+    dep("p5g","purchases","  Nissan","  Nissan", "p5"),
+    dep("p5h","purchases","  Kia","  Kia", "p5"),
+    dep("p5i","purchases","  Chevrolet","  Chevrolet", "p5"),
+    dep("p5j","purchases","  Suzuki","  Suzuki", "p5"),
+    dep("p5k","purchases","  Lada","  Lada", "p5"),
+    dep("p5l","purchases","  Haval","  Haval", "p5"),
+    dep("p5m","purchases","  Tenet","  Tenet", "p5"),
+    dep("p5n","purchases","  Lamborghini","  Lamborghini", "p5"),
+    dep("p5o","purchases","  Rolls-Royce","  Rolls-Royce", "p5"),
+    dep("p5p","purchases","  Bugatti","  Bugatti", "p5"),
+    dep("p6","purchases","Купил квартиру","Bought an apartment"),
+    dep("p7","purchases","Купил дом","Bought a house"),
+    dep("p8","purchases","Купил самолёт","Bought a plane"),
 
-    // Food
-    {id:"f1",cat:"food",ru:"Пробовал сыр с плесенью",en:"Tried blue cheese"},
-    {id:"f2",cat:"food",ru:"Пробовал улиток",en:"Tried snails"},
-    {id:"f3",cat:"food",ru:"Пробовал лягушачьи лапки",en:"Tried frog legs"},
-    {id:"f4",cat:"food",ru:"Пробовал страусятину",en:"Tried ostrich meat"},
-    {id:"f5",cat:"food",ru:"Пробовал крокодила",en:"Tried crocodile"},
-    {id:"f6",cat:"food",ru:"Ел суши",en:"Eaten sushi"},
-    {id:"f7",cat:"food",ru:"Ел пиццу",en:"Eaten pizza"},
-    {id:"f8",cat:"food",ru:"Ел чёрную икру",en:"Eaten black caviar"},
-    {id:"f9",cat:"food",ru:"Ел экзотические фрукты",en:"Eaten exotic fruits"},
-    {id:"f10",cat:"food",ru:"Ловил рыбу",en:"Gone fishing"},
-    {id:"f11",cat:"food",ru:"Ел шаурму",en:"Eaten shawarma"},
-    {id:"f12",cat:"food",ru:"Ел бургер",en:"Eaten a burger"},
-    {id:"f13",cat:"food",ru:"Ел картошку фри",en:"Eaten french fries"},
-    {id:"f14",cat:"food",ru:"Ел сладкую вату",en:"Eaten cotton candy"},
-    {id:"f15",cat:"food",ru:"Пробовал индейку",en:"Tried turkey"},
-    {id:"f16",cat:"food",ru:"Пробовал крольчатину",en:"Tried rabbit meat"},
-    {id:"f17",cat:"food",ru:"Пробовал 100-летнее яйцо",en:"Tried 100-year egg"},
-    {id:"f18",cat:"food",ru:"Пробовал рыбу фугу",en:"Tried fugu fish"},
-    {id:"f19",cat:"food",ru:"Пробовал свинину",en:"Tried pork", tags:["pork","meat"]},
-    {id:"f20",cat:"food",ru:"Пробовал курятину",en:"Tried chicken", tags:["meat"]},
-    {id:"f21",cat:"food",ru:"Пробовал говядину",en:"Tried beef", tags:["beef","meat"]},
-    {id:"f22",cat:"food",ru:"Пробовал баранину",en:"Tried lamb", tags:["meat"]},
-    {id:"f23",cat:"food",ru:"Пробовал конину",en:"Tried horse meat", tags:["horse","meat"]},
-    {id:"f24",cat:"food",ru:"Пробовал рыбу",en:"Tried fish", tags:["meat"]},
-    {id:"f25",cat:"food",ru:"Пробовал кальмаров",en:"Tried squid", tags:["shellfish","meat"]},
-    {id:"f26",cat:"food",ru:"Пробовал креветок",en:"Tried shrimp", tags:["shellfish","meat"]},
-    {id:"f27",cat:"food",ru:"Пробовал моллюсков",en:"Tried mollusks", tags:["shellfish","meat"]},
+    // ===== FINANCE =====
+    dep("fin1","finance","Открыл банковский счёт","Opened a bank account"),
+    dep("fin2","finance","Получал кредитную карту","Got a credit card"),
+    dep("fin3","finance","Брал кредит","Took a loan"),
+    dep("fin4","finance","Брал ипотеку","Took a mortgage"),
+    dep("fin5","finance","Сделал инвестиции","Made investments"),
+    dep("fin6","finance","Купил акции","Bought stocks"),
+    dep("fin7","finance","Купил криптовалюту","Bought cryptocurrency"),
+    dep("fin8","finance","Инвестировал в недвижимость","Invested in real estate"),
 
-    // Drinks
-    {id:"d1",cat:"drinks",ru:"Пил алкоголь",en:"Drank alcohol"},
-    {id:"d1a",cat:"drinks",ru:"  Пробовал шампанское",en:"  Tried champagne", dependsOn:"d1"},
-    {id:"d1b",cat:"drinks",ru:"  Пробовал пиво",en:"  Tried beer", dependsOn:"d1"},
-    {id:"d1c",cat:"drinks",ru:"  Пробовал вино",en:"  Tried wine", dependsOn:"d1"},
-    {id:"d1d",cat:"drinks",ru:"  Пробовал водку",en:"  Tried vodka", dependsOn:"d1"},
-    {id:"d2",cat:"drinks",ru:"Пил мате",en:"Drank mate"},
-    {id:"d3",cat:"drinks",ru:"Пил настоящий японский чай",en:"Drank authentic Japanese tea"},
+    // ===== HOME & LIVING =====
+    dep("home1","home","Сделал ремонт","Did renovation"),
+    dep("home2","home","Собрал мебель","Assembled furniture"),
+    dep("home3","home","Посадил огород","Planted a garden"),
+    dep("home4","home","Сделал перестановку","Rearranged furniture"),
+    dep("home5","home","Украсил дом к празднику","Decorated for holiday"),
+    dep("home6","home","Завёл комнатные растения","Got houseplants"),
+    dep("home7","home","Сделал уборку в подъезде","Cleaned the hallway"),
+    dep("home8","home","Приготовил своё первое блюдо","Cooked first meal"),
+    dep("home8a","home","  Испёк хлеб","  Baked bread", "home8"),
+    dep("home8b","home","  Приготовил торт","  Made a cake", "home8"),
+    dep("home8c","home","  Сварил суп","  Made soup", "home8"),
+    dep("home8d","home","  Жарил мясо","  Fried meat", "home8"),
+    dep("home8e","home","  Готовил для компании (>10)","  Cooked for 10+ people", "home8"),
+    dep("home8f","home","  Приготовил блюдо национальной кухни","  Cooked national dish", "home8"),
+    dep("home8g","home","  Делал эксперименты с едой","  Did food experiments", "home8"),
 
-    // Water
-    {id:"w1",cat:"water",ru:"Был на море",en:"Been to the sea"},
-    {id:"w2",cat:"water",ru:"Был на речке",en:"Been to a river"},
-    {id:"w3",cat:"water",ru:"Был на озере",en:"Been to a lake"},
-    {id:"w4",cat:"water",ru:"Был на океане",en:"Been to the ocean"},
+    // ===== TRAVEL =====
+    dep("tr1","travel","Был в Москве","Been to Moscow", null, "ru"),
+    dep("tr2","travel","Был в Казане","Been to Kazan", null, "ru"),
+    dep("tr3","travel","Был в Санкт-Петербурге","Been to Saint Petersburg", null, "ru"),
+    dep("tr4","travel","Был в Нижнем Новгороде","Been to Nizhny Novgorod", null, "ru"),
+    dep("tr5","travel","Был в Сочи","Been to Sochi", null, "ru"),
+    dep("tr6","travel","Был в Крыму","Been to Crimea", null, "ru"),
+    dep("tr7","travel","Был в Чернобыле","Been to Chernobyl", null, "ru"),
+    dep("tr8","travel","Был на Красной площади","Been to Red Square", null, "ru"),
+    dep("tr9","travel","Был в Астане","Been to Astana", null, "ru"),
+    dep("tr10","travel","Был в Нью-Йорке","Been to New York", null, "en"),
+    dep("tr11","travel","Был в Лондоне","Been to London", null, "en"),
+    dep("tr12","travel","Был в Вашингтоне","Been to Washington, D.C.", null, "en"),
+    dep("tr13","travel","Был в Эдинбурге","Been to Edinburgh", null, "en"),
+    dep("tr14","travel","Был в Европе","Been to Europe"),
+    dep("tr15","travel","Был в Азии","Been to Asia"),
+    dep("tr16","travel","Был в Австралии","Been to Australia"),
+    dep("tr17","travel","Был в Африке","Been to Africa"),
+    dep("tr18","travel","Был в Северной Америке","Been to North America"),
+    dep("tr19","travel","Был в Южной Америке","Been to South America"),
 
-    // Adult
-    {id:"a1",cat:"adult",ru:"Курил",en:"Smoked", adultOnly:true},
-    {id:"a2",cat:"adult",ru:"Смотрел видео для взрослых",en:"Watched adult videos", adultOnly:true},
-    {id:"a3",cat:"adult",ru:"Мастурбировал",en:"Masturbated", adultOnly:true},
-    {id:"a4",cat:"adult",ru:"Целовался",en:"Kissed someone", adultOnly:true},
-    {id:"a5",cat:"adult",ru:"Занимался сексом",en:"Had sex", adultOnly:true},
+    // ===== TRANSPORT =====
+    dep("t1","transport","Летал на самолёте","Flown on a plane"),
+    dep("t2","transport","Летал на вертолёте","Flown on a helicopter"),
+    dep("t3","transport","Летал на дельтаплане","Flown on a hang glider"),
+    dep("t4","transport","Плавал на лайнере","Sailed on a cruise liner"),
+    dep("t5","transport","Плавал на катере","Ridden a speedboat"),
+    dep("t6","transport","Ездил в автомобиле","Ridden in a car"),
+    dep("t7","transport","Ездил в поезде","Ridden a train"),
 
-    // Sports
-    {id:"s1",cat:"sports",ru:"Играл в футбол",en:"Played football"},
-    {id:"s2",cat:"sports",ru:"Играл в хоккей",en:"Played hockey"},
-    {id:"s3",cat:"sports",ru:"Играл в теннис",en:"Played tennis"},
-    {id:"s4",cat:"sports",ru:"Играл в баскетбол",en:"Played basketball"},
-    {id:"s5",cat:"sports",ru:"Играл в волейбол",en:"Played volleyball"},
-    {id:"s6",cat:"sports",ru:"Бегал марафон",en:"Ran a marathon"},
-    {id:"s7",cat:"sports",ru:"Прыгал с парашютом",en:"Skydived"},
-    {id:"s8",cat:"sports",ru:"Нырял с аквалангом",en:"Scuba dived"},
-    {id:"s9",cat:"sports",ru:"Катался на горных лыжах",en:"Skiied"},
-    {id:"s10",cat:"sports",ru:"Катался на сноуборде",en:"Snowboarded"},
+    // ===== LANGUAGES =====
+    dep("lang1","languages","Выучил русский","Learned Russian"),
+    dep("lang2","languages","Выучил английский","Learned English"),
+    dep("lang3","languages","Выучил испанский","Learned Spanish"),
+    dep("lang4","languages","Выучил немецкий","Learned German"),
+    dep("lang5","languages","Выучил французский","Learned French"),
+    dep("lang6","languages","Выучил японский","Learned Japanese"),
+    dep("lang7","languages","Выучил арабский","Learned Arabic"),
+    dep("lang8","languages","Выучил португальский","Learned Portuguese"),
+    dep("lang9","languages","Выучил итальянский","Learned Italian"),
+    dep("lang10","languages","Выучил китайский","Learned Chinese"),
+    dep("lang11","languages","Выучил татарский","Learned Tatar", null, "ru"),
+    dep("lang12","languages","Выучил башкирский","Learned Bashkir", null, "ru"),
+    dep("lang13","languages","Выучил чеченский","Learned Chechen", null, "ru"),
+    dep("lang14","languages","Выучил турецкий","Learned Turkish"),
+    dep("lang15","languages","Выучил хинди","Learned Hindi"),
+    dep("lang16","languages","Выучил эсперанто","Learned Esperanto"),
+    dep("lang17","languages","Выучил турецкий","Learned Turkish"),
+    dep("lang18","languages","Выучил хинди","Learned Hindi"),
+    dep("lang19","languages","Выучил нидерландский","Learned Dutch"),
+    dep("lang20","languages","Выучил казахский","Learned Kazakh"),
+    dep("lang21","languages","Выучил латынь","Learned Latin"),
+    dep("lang22","languages","Выучил греческий","Learned Greek"),
+    dep("lang23","languages","Выучил украинский","Learned Ukrainian"),
+    dep("lang24","languages","Выучил польский","Learned Polish"),
+    dep("lang25","languages","Выучил белорусский","Learned Belarusian"),
+    dep("lang26","languages","Выучил шведский","Learned Swedish"),
+    dep("lang27","languages","Выучил иврит","Learned Hebrew"),
+    dep("lang28","languages","Выучил индонезийский","Learned Indonesian"),
+    dep("lang29","languages","Выучил вьетнамский","Learned Vietnamese"),
+    dep("lang30","languages","Выучил корейский","Learned Korean"),
+    dep("lang31","languages","Выучил фарси","Learned Farsi"),
+    dep("lang32","languages","Выучил урду","Learned Urdu"),
+    dep("lang33","languages","Выучил малайский","Learned Malay"),
+    dep("lang34","languages","Выучил суахили","Learned Swahili"),
+    dep("lang35","languages","Выучил амхарский","Learned Amharic"),
+    dep("lang36","languages","Выучил зулу","Learned Zulu"),
+    dep("lang37","languages","Выучил чешский","Learned Czech"),
+    dep("lang38","languages","Выучил словацкий","Learned Slovak"),
+    dep("lang39","languages","Выучил болгарский","Learned Bulgarian"),
+    dep("lang40","languages","Выучил сербский","Learned Serbian"),
+    dep("lang41","languages","Выучил хорватский","Learned Croatian"),
+    dep("lang42","languages","Выучил румынский","Learned Romanian"),
+    dep("lang43","languages","Выучил венгерский","Learned Hungarian"),
+    dep("lang44","languages","Выучил финский","Learned Finnish"),
+    dep("lang45","languages","Выучил эстонский","Learned Estonian"),
+    dep("lang46","languages","Выучил латышский","Learned Latvian"),
+    dep("lang47","languages","Выучил литовский","Learned Lithuanian"),
+    dep("lang48","languages","Выучил исландский","Learned Icelandic"),
+    dep("lang49","languages","Выучил норвежский","Learned Norwegian"),
+    dep("lang50","languages","Выучил датский","Learned Danish"),
+    dep("lang51","languages","Выучил тайский","Learned Thai"),
+    dep("lang52","languages","Выучил бирманский","Learned Burmese"),
+    dep("lang53","languages","Выучил кхмерский","Learned Khmer"),
+    dep("lang54","languages","Выучил лаосский","Learned Lao"),
+    dep("lang55","languages","Выучил непальский","Learned Nepali"),
+    dep("lang56","languages","Выучил тамильский","Learned Tamil"),
+    dep("lang57","languages","Выучил телугу","Learned Telugu"),
+    dep("lang58","languages","Выучил каннада","Learned Kannada"),
+    dep("lang59","languages","Выучил малаялам","Learned Malayalam"),
+    dep("lang60","languages","Выучил бенгальский","Learned Bengali"),
+    dep("lang61","languages","Выучил панджаби","Learned Punjabi"),
+    dep("lang62","languages","Выучил маратхи","Learned Marathi"),
+    dep("lang63","languages","Выучил грузинский","Learned Georgian"),
+    dep("lang64","languages","Выучил армянский","Learned Armenian"),
+    dep("lang65","languages","Выучил азербайджанский","Learned Azerbaijani"),
+    dep("lang66","languages","Выучил узбекский","Learned Uzbek"),
+    dep("lang67","languages","Выучил туркменский","Learned Turkmen"),
+    dep("lang68","languages","Выучил киргизский","Learned Kyrgyz"),
+    dep("lang69","languages","Выучил таджикский","Learned Tajik"),
+    dep("lang70","languages","Выучил монгольский","Learned Mongolian"),
+    dep("lang71","languages","Выучил тибетский","Learned Tibetan"),
+    dep("lang72","languages","Выучил коптский","Learned Coptic"),
+    dep("lang73","languages","Выучил санскрит","Learned Sanskrit"),
+    dep("lang74","languages","Выучил клингонский","Learned Klingon"),
 
-    // Events
-    {id:"ev1",cat:"events",ru:"Был на Олимпийских играх",en:"Been to the Olympic Games"},
-    {id:"ev2",cat:"events",ru:"Был на Евровидении",en:"Been to Eurovision"},
-    {id:"ev3",cat:"events",ru:"Был на Интервидении",en:"Been to Intervision"},
-    {id:"ev4",cat:"events",ru:"Был на Чемпионате Мира",en:"Been to the World Championship"},
+    // ===== FOOD =====
+    dep("f1","food","Пробовал экзотические фрукты","Tried exotic fruits"),
+    dep("f1a","food","  Мангостин","  Mangosteen", "f1"),
+    dep("f1b","food","  Дуриан","  Durian", "f1"),
+    dep("f1c","food","  Рамбутан","  Rambutan", "f1"),
+    dep("f1d","food","  Личи","  Lychee", "f1"),
+    dep("f1e","food","  Питахайя (драконий фрукт)","  Pitahaya (dragon fruit)", "f1"),
+    dep("f1f","food","  Джекфрукт","  Jackfruit", "f1"),
+    dep("f1g","food","  Маракуйя","  Passion fruit", "f1"),
+    dep("f1h","food","  Папайя","  Papaya", "f1"),
+    dep("f1i","food","  Гуава","  Guava", "f1"),
+    dep("f1j","food","  Фейхоа","  Feijoa", "f1"),
+    dep("f1k","food","  Карамбола","  Carambola", "f1"),
+    dep("f1l","food","  Кивано (рогатая дыня)","  Kiwano (horned melon)", "f1"),
+    dep("f1m","food","  Гренадилла","  Grenadilla", "f1"),
+    dep("f1n","food","  Саподилла","  Sapodilla", "f1"),
+    dep("f1o","food","  Черимойя","  Cherimoya", "f1"),
+    dep("f1p","food","  Анона","  Annona", "f1"),
+    dep("f1q","food","  Сметанное яблоко","  Soursop", "f1"),
+    dep("f1r","food","  Аки","  Ackee", "f1"),
+    dep("f1s","food","  Монстера деликатесная","  Monstera deliciosa", "f1"),
+    dep("f1t","food","  Марула","  Marula", "f1"),
+    dep("f1u","food","  Кумкват","  Kumquat", "f1"),
+    dep("f1v","food","  Помело","  Pomelo", "f1"),
+    dep("f1w","food","  Свити","  Sweetie", "f1"),
+    dep("f1x","food","  Лонган","  Longan", "f1"),
+    dep("f1y","food","  Манго","  Mango", "f1"),
+    dep("f1z","food","  Кокос (молодой)","  Coconut (young)", "f1"),
+    dep("f1aa","food","  Хурма","  Persimmon", "f1"),
+    dep("f1ab","food","  Мушмула","  Loquat", "f1"),
+    dep("f1ac","food","  Инжир (свежий)","  Fig (fresh)", "f1"),
+    dep("f1ad","food","  Финики (свежие)","  Dates (fresh)", "f1"),
 
-    // Entertainment
-    {id:"e1",cat:"entertainment",ru:"Играл в видеоигры",en:"Played video games"},
-    {id:"e1a",cat:"entertainment",ru:"  CS:GO 2",en:"  CS:GO 2", dependsOn:"e1"},
-    {id:"e1b",cat:"entertainment",ru:"  Dota 2",en:"  Dota 2", dependsOn:"e1"},
-    {id:"e1c",cat:"entertainment",ru:"  GTA 5",en:"  GTA 5", dependsOn:"e1"},
-    {id:"e1d",cat:"entertainment",ru:"  GTA 6",en:"  GTA 6", dependsOn:"e1"},
-    {id:"e1e",cat:"entertainment",ru:"  GTA 4",en:"  GTA 4", dependsOn:"e1"},
-    {id:"e1f",cat:"entertainment",ru:"  GTA 3",en:"  GTA 3", dependsOn:"e1"},
-    {id:"e1g",cat:"entertainment",ru:"  GTA 2",en:"  GTA 2", dependsOn:"e1"},
-    {id:"e1h",cat:"entertainment",ru:"  GTA",en:"  GTA", dependsOn:"e1"},
-    {id:"e1i",cat:"entertainment",ru:"  PUBG",en:"  PUBG", dependsOn:"e1"},
-    {id:"e1j",cat:"entertainment",ru:"  Palworld",en:"  Palworld", dependsOn:"e1"},
-    {id:"e1k",cat:"entertainment",ru:"  EA SPORTS FC 26",en:"  EA SPORTS FC 26", dependsOn:"e1"},
-    {id:"e1l",cat:"entertainment",ru:"  Apex Legends",en:"  Apex Legends", dependsOn:"e1"},
-    {id:"e1m",cat:"entertainment",ru:"  Marvel Rivals",en:"  Marvel Rivals", dependsOn:"e1"},
-    {id:"e1n",cat:"entertainment",ru:"  Warframe",en:"  Warframe", dependsOn:"e1"},
-    {id:"e1o",cat:"entertainment",ru:"  Rust",en:"  Rust", dependsOn:"e1"},
-    {id:"e1p",cat:"entertainment",ru:"  Dead by Daylight",en:"  Dead by Daylight", dependsOn:"e1"},
-    {id:"e1q",cat:"entertainment",ru:"  War Thunder",en:"  War Thunder", dependsOn:"e1"},
-    {id:"e1r",cat:"entertainment",ru:"  World of Tanks",en:"  World of Tanks", dependsOn:"e1"},
-    {id:"e1s",cat:"entertainment",ru:"  World of Warships",en:"  World of Warships", dependsOn:"e1"},
-    {id:"e1t",cat:"entertainment",ru:"  Minecraft",en:"  Minecraft", dependsOn:"e1"},
-    {id:"e1u",cat:"entertainment",ru:"  Roblox",en:"  Roblox", dependsOn:"e1"},
-    {id:"e1v",cat:"entertainment",ru:"  Sims",en:"  Sims", dependsOn:"e1"},
-    {id:"e1w",cat:"entertainment",ru:"  Sims 2",en:"  Sims 2", dependsOn:"e1"},
-    {id:"e1x",cat:"entertainment",ru:"  Sims 3",en:"  Sims 3", dependsOn:"e1"},
-    {id:"e1y",cat:"entertainment",ru:"  Sims 4",en:"  Sims 4", dependsOn:"e1"},
-    {id:"e1z",cat:"entertainment",ru:"  NARAKA: BLADEPOINT",en:"  NARAKA: BLADEPOINT", dependsOn:"e1"},
-    {id:"e1aa",cat:"entertainment",ru:"  Genshin Impact",en:"  Genshin Impact", dependsOn:"e1"},
-    {id:"e1ab",cat:"entertainment",ru:"  Cyberpunk 2077",en:"  Cyberpunk 2077", dependsOn:"e1"},
-    {id:"e1ac",cat:"entertainment",ru:"  Tom Clancy's Rainbow Six Siege",en:"  Tom Clancy's Rainbow Six Siege", dependsOn:"e1"},
-    {id:"e1ad",cat:"entertainment",ru:"  Path of Exile 2",en:"  Path of Exile 2", dependsOn:"e1"},
-    {id:"e1ae",cat:"entertainment",ru:"  Team Fortress 2",en:"  Team Fortress 2", dependsOn:"e1"},
-    {id:"e1af",cat:"entertainment",ru:"  Euro Truck Simulator 2",en:"  Euro Truck Simulator 2", dependsOn:"e1"},
-    {id:"e1ag",cat:"entertainment",ru:"  Euro Truck Simulator",en:"  Euro Truck Simulator", dependsOn:"e1"},
-    {id:"e1ah",cat:"entertainment",ru:"  Baldur's Gate 3",en:"  Baldur's Gate 3", dependsOn:"e1"},
-    {id:"e1ai",cat:"entertainment",ru:"  Subnautica",en:"  Subnautica", dependsOn:"e1"},
-    {id:"e1aj",cat:"entertainment",ru:"  Subnautica 2",en:"  Subnautica 2", dependsOn:"e1"},
-    {id:"e1ak",cat:"entertainment",ru:"  Subway Surfers",en:"  Subway Surfers", dependsOn:"e1"},
-    {id:"e1al",cat:"entertainment",ru:"  Brawl Stars",en:"  Brawl Stars", dependsOn:"e1"},
-    {id:"e1am",cat:"entertainment",ru:"  Clash Royale",en:"  Clash Royale", dependsOn:"e1"},
-    {id:"e1an",cat:"entertainment",ru:"  Tanks Blitz",en:"  Tanks Blitz", dependsOn:"e1"},
-    {id:"e1ao",cat:"entertainment",ru:"  World of Tanks Blitz",en:"  World of Tanks Blitz", dependsOn:"e1"},
-    {id:"e1ap",cat:"entertainment",ru:"  Plague Inc",en:"  Plague Inc", dependsOn:"e1"},
-    {id:"e1aq",cat:"entertainment",ru:"  Zenless Zone Zero",en:"  Zenless Zone Zero", dependsOn:"e1"},
-    {id:"e1ar",cat:"entertainment",ru:"  Terraria",en:"  Terraria", dependsOn:"e1"},
-    {id:"e1as",cat:"entertainment",ru:"  Hytale",en:"  Hytale", dependsOn:"e1"},
-    {id:"e1at",cat:"entertainment",ru:"  Shadow Fight 2",en:"  Shadow Fight 2", dependsOn:"e1"},
-    {id:"e1au",cat:"entertainment",ru:"  Shadow Fight 3",en:"  Shadow Fight 3", dependsOn:"e1"},
-    {id:"e1av",cat:"entertainment",ru:"  Shadow Fight: Arena",en:"  Shadow Fight: Arena", dependsOn:"e1"},
-    {id:"e2",cat:"entertainment",ru:"Был в аквапарке",en:"Been to a water park"},
-    {id:"e3",cat:"entertainment",ru:"Был в парке развлечений",en:"Been to an amusement park"},
-    {id:"e4",cat:"entertainment",ru:"Был в Disneyland",en:"Been to Disneyland"},
-    {id:"e5",cat:"entertainment",ru:"Был в батутном центре",en:"Been to a trampoline park"}
+    dep("f2","food","Пробовал экзотические овощи","Tried exotic vegetables"),
+    dep("f2a","food","  Лук-порей","  Leek", "f2"),
+    dep("f2b","food","  Артишок","  Artichoke", "f2"),
+    dep("f2c","food","  Романеско","  Romanesco", "f2"),
+    dep("f2d","food","  Кольраби","  Kohlrabi", "f2"),
+    dep("f2e","food","  Окра (бамия)","  Okra (bamia)", "f2"),
+    dep("f2f","food","  Даикон","  Daikon", "f2"),
+
+    dep("f3","food","Пробовал экзотическое мясо","Tried exotic meat"),
+    dep("f3a","food","  Кенгуру","  Kangaroo", "f3"),
+    dep("f3b","food","  Зебра","  Zebra", "f3"),
+    dep("f3c","food","  Жираф","  Giraffe", "f3"),
+    dep("f3d","food","  Слон","  Elephant", "f3"),
+    dep("f3e","food","  Носорог","  Rhinoceros", "f3"),
+    dep("f3f","food","  Бегемот","  Hippopotamus", "f3"),
+    dep("f3g","food","  Медведь","  Bear", "f3"),
+    dep("f3h","food","  Рысь","  Lynx", "f3"),
+    dep("f3i","food","  Волк","  Wolf", "f3"),
+    dep("f3j","food","  Лиса","  Fox", "f3"),
+    dep("f3k","food","  Барсук","  Badger", "f3"),
+    dep("f3l","food","  Бобёр","  Beaver", "f3"),
+    dep("f3m","food","  Нутрия","  Nutria", "f3"),
+    dep("f3n","food","  Верблюд","  Camel", "f3"),
+    dep("f3o","food","  Буйвол","  Buffalo", "f3"),
+    dep("f3p","food","  Як","  Yak", "f3"),
+    dep("f3q","food","  Лось","  Moose", "f3"),
+    dep("f3r","food","  Кабан (дикий)","  Wild boar", "f3"),
+    dep("f3s","food","  Заяц","  Hare", "f3"),
+    dep("f3t","food","  Голубь","  Pigeon", "f3"),
+    dep("f3u","food","  Перепел","  Quail", "f3"),
+    dep("f3v","food","  Фазан","  Pheasant", "f3"),
+    dep("f3w","food","  Куропатка","  Partridge", "f3"),
+    dep("f3x","food","  Павлин","  Peacock", "f3"),
+    dep("f3y","food","  Цапля","  Heron", "f3"),
+    dep("f3z","food","  Аист","  Stork", "f3"),
+
+    dep("f4","food","Пробовал экзотические морепродукты","Tried exotic seafood"),
+    dep("f4a","food","  Морской ёж","  Sea urchin", "f4"),
+    dep("f4b","food","  Морская звезда","  Starfish", "f4"),
+    dep("f4c","food","  Морской огурец","  Sea cucumber", "f4"),
+    dep("f4d","food","  Трепанг","  Trepang", "f4"),
+    dep("f4e","food","  Медуза","  Jellyfish", "f4"),
+    dep("f4f","food","  Морской гребешок","  Scallop", "f4"),
+    dep("f4g","food","  Устрицы","  Oysters", "f4"),
+    dep("f4h","food","  Мидии","  Mussels", "f4"),
+    dep("f4i","food","  Лангустины","  Langoustines", "f4"),
+    dep("f4j","food","  Королевские креветки","  King prawns", "f4"),
+    dep("f4k","food","  Омары","  Lobsters", "f4"),
+    dep("f4l","food","  Камчатский краб","  King crab", "f4"),
+    dep("f4m","food","  Королевский краб","  Royal crab", "f4"),
+    dep("f4n","food","  Морской паук","  Sea spider", "f4"),
+    dep("f4o","food","  Морской червь","  Sea worm", "f4"),
+
+    dep("f5","food","Пробовал краба","Tried crab"),
+    dep("f6","food","Пробовал раков","Tried crayfish"),
+
+    dep("f7","food","Пробовал сыры","Tried cheeses"),
+    dep("f7a","food","  Пармезан","  Parmesan", "f7"),
+    dep("f7b","food","  Рокфор","  Roquefort", "f7"),
+    dep("f7c","food","  Горгонзола","  Gorgonzola", "f7"),
+    dep("f7d","food","  Стилтон","  Stilton", "f7"),
+    dep("f7e","food","  Камамбер","  Camembert", "f7"),
+    dep("f7f","food","  Бри","  Brie", "f7"),
+    dep("f7g","food","  Чеддер","  Cheddar", "f7"),
+    dep("f7h","food","  Моцарелла","  Mozzarella", "f7"),
+    dep("f7i","food","  Буратта","  Burrata", "f7"),
+    dep("f7j","food","  Рикотта","  Ricotta", "f7"),
+    dep("f7k","food","  Маскарпоне","  Mascarpone", "f7"),
+    dep("f7l","food","  Филадельфия","  Philadelphia", "f7"),
+    dep("f7m","food","  Фета","  Feta", "f7"),
+    dep("f7n","food","  Халлуми","  Halloumi", "f7"),
+    dep("f7o","food","  Эдам (голландский)","  Edam (Dutch)", "f7"),
+    dep("f7p","food","  Гауда (голландский)","  Gouda (Dutch)", "f7"),
+    dep("f7q","food","  Маасдам (голландский)","  Maasdam (Dutch)", "f7"),
+    dep("f7r","food","  Эмменталь (швейцарский)","  Emmental (Swiss)", "f7"),
+    dep("f7s","food","  Грюйер (швейцарский)","  Gruyère (Swiss)", "f7"),
+    dep("f7t","food","  Аппенцеллер (швейцарский)","  Appenzeller (Swiss)", "f7"),
+    dep("f7u","food","  Раклет (швейцарский)","  Raclette (Swiss)", "f7"),
+    dep("f7v","food","  Фонтю (швейцарский)","  Fontina (Swiss)", "f7"),
+
+    dep("f8","food","Пробовал необычную еду","Tried unusual food"),
+    dep("f8a","food","  Халук (турецкая радость)","  Turkish delight", "f8"),
+    dep("f8b","food","  Баклава","  Baklava", "f8"),
+    dep("f8c","food","  Пахлава","  Pakhlava", "f8"),
+    dep("f8d","food","  Чурчхела","  Churchkhela", "f8"),
+    dep("f8e","food","  Козинаки","  Kozinaki", "f8"),
+    dep("f8f","food","  Халва (подсолнечная)","  Halva (sunflower)", "f8"),
+    dep("f8g","food","  Халва (кунжутная)","  Halva (sesame)", "f8"),
+    dep("f8h","food","  Нуга","  Nougat", "f8"),
+    dep("f8i","food","  Пастила (домашняя)","  Pastila (homemade)", "f8"),
+    dep("f8j","food","  Зефир (домашний)","  Marshmallow (homemade)", "f8"),
+    dep("f8k","food","  Мармелад (домашний)","  Marmalade (homemade)", "f8"),
+    dep("f8l","food","  Мухаммед (индийская сладость)","  Muhammad (Indian sweet)", "f8"),
+    dep("f8m","food","  Ладу (индийская сладость)","  Ladoo (Indian sweet)", "f8"),
+    dep("f8n","food","  Гулаб джамун (индийская)","  Gulab jamun (Indian)", "f8"),
+    dep("f8o","food","  Расгулла (индийская)","  Rasgulla (Indian)", "f8"),
+    dep("f8p","food","  Сэндвич (впервые)","  Sandwich (first time)", "f8"),
+    dep("f8q","food","  Бургер (впервые)","  Burger (first time)", "f8"),
+    dep("f8r","food","  Пицца (впервые)","  Pizza (first time)", "f8"),
+    dep("f8s","food","  Картошка фри (впервые)","  French fries (first time)", "f8"),
+    dep("f8t","food","  Шаурма (впервые)","  Shawarma (first time)", "f8"),
+    dep("f8u","food","  Бутерброд (домашний, впервые)","  Sandwich (homemade, first)", "f8"),
+    dep("f8v","food","  Круассан (впервые)","  Croissant (first time)", "f8"),
+    dep("f8w","food","  Бублик (впервые)","  Bagel (first time)", "f8"),
+    dep("f8x","food","  Сушка (впервые)","  Drying (first time)", "f8"),
+    dep("f8y","food","  Баранка (впервые)","  Baranka (first time)", "f8"),
+    dep("f8z","food","  Крендель (впервые)","  Pretzel (first time)", "f8"),
+
+    dep("f9","food","Пробовал национальную кухню","Tried national cuisine"),
+    dep("f9a","food","  Итальянская (паста, пицца, ризотто)","  Italian (pasta, pizza, risotto)", "f9"),
+    dep("f9b","food","  Французская (лягушки, улитки)","  French (frogs, snails)", "f9"),
+    dep("f9c","food","  Японская (суши, сашими, рамен)","  Japanese (sushi, sashimi, ramen)", "f9"),
+    dep("f9d","food","  Китайская (утка по-пекински)","  Chinese (Peking duck)", "f9"),
+    dep("f9e","food","  Индийская (карри, наан)","  Indian (curry, naan)", "f9"),
+    dep("f9f","food","  Тайская (pad thai, том ям)","  Thai (pad thai, tom yum)", "f9"),
+    dep("f9g","food","  Корейская (кимчи, бибимбап)","  Korean (kimchi, bibimbap)", "f9"),
+    dep("f9h","food","  Турецкая (шашлык, долма)","  Turkish (kebab, dolma)", "f9"),
+    dep("f9i","food","  Греческая (мусака, сувлаки)","  Greek (moussaka, souvlaki)", "f9"),
+    dep("f9j","food","  Испанская (паэлья, тапас, хамон)","  Spanish (paella, tapas, jamón)", "f9"),
+    dep("f9k","food","  Португальская (pastel de nata)","  Portuguese (pastel de nata)", "f9"),
+    dep("f9l","food","  Арабская (хумус, фалафель)","  Arab (hummus, falafel)", "f9"),
+    dep("f9m","food","  Израильская (шакшука)","  Israeli (shakshuka)", "f9"),
+    dep("f9n","food","  Марокканская (тажин, кускус)","  Moroccan (tagine, couscous)", "f9"),
+    dep("f9o","food","  Африканская (фуфу)","  African (fufu)", "f9"),
+    dep("f9p","food","  Латиноамериканская (тако)","  Latin American (taco)", "f9"),
+    dep("f9q","food","  Аргентинская (асандо, стейки)","  Argentine (asado, steaks)", "f9"),
+    dep("f9r","food","  Бразильская (фейджоада)","  Brazilian (feijoada)", "f9"),
+    dep("f9s","food","  Мексиканская (тако, начос)","  Mexican (tacos, nachos)", "f9"),
+    dep("f9t","food","  Канадская (путин)","  Canadian (poutine)", "f9"),
+    dep("f9u","food","  Австралийская (пирог с мясом)","  Australian (meat pie)", "f9"),
+    dep("f9v","food","  Норвежская (грамм, фрикадельки)","  Norwegian (gram, meatballs)", "f9"),
+    dep("f9w","food","  Шведская (тефтели)","  Swedish (meatballs)", "f9"),
+    dep("f9x","food","  Финская (суп из лосося)","  Finnish (salmon soup)", "f9"),
+    dep("f9y","food","  Чешская (свиные ножки, кнедлики)","  Czech (pork knuckle, dumplings)", "f9"),
+    dep("f9z","food","  Польская (пироги, бигос)","  Polish (pierogi, bigos)", "f9"),
+    dep("f9aa","food","  Венгерская (гуляш, перкельт)","  Hungarian (goulash, pörkölt)", "f9"),
+
+    dep("f10","food","Ел суши","Eaten sushi"),
+    dep("f11","food","Ел пиццу","Eaten pizza"),
+    dep("f12","food","Ел шаурму","Eaten shawarma"),
+    dep("f13","food","Ел бургер","Eaten a burger"),
+    dep("f14","food","Ел картошку фри","Eaten french fries"),
+    dep("f15","food","Ел сладкую вату","Eaten cotton candy"),
+    dep("f16","food","Пробовал индейку","Tried turkey"),
+    dep("f17","food","Пробовал крольчатину","Tried rabbit meat"),
+    dep("f18","food","Пробовал 100-летнее яйцо","Tried century egg"),
+    dep("f19","food","Пробовал рыбу фугу","Tried fugu fish"),
+    dep("f20","food","Пробовал свинину","Tried pork", null, null, null, ["pork","meat"]),
+    dep("f21","food","Пробовал говядину","Tried beef", null, null, null, ["beef","meat"]),
+
+    // ===== DRINKS =====
+    dep("d1","drinks","Пил экзотические напитки","Drank exotic drinks"),
+    dep("d1a","drinks","  Чай мате","  Mate tea", "d1"),
+    dep("d1b","drinks","  Японский чай","  Japanese tea", "d1"),
+    dep("d1c","drinks","  Чай из листьев гуараны","  Guarana tea", "d1"),
+    dep("d1d","drinks","  Квас из свёклы","  Beet kvass", "d1"),
+    dep("d1e","drinks","  Квас из хлеба (домашний)","  Bread kvass (homemade)", "d1"),
+    dep("d1f","drinks","  Лимонад (свежевыжатый)","  Lemonade (fresh)", "d1"),
+    dep("d1g","drinks","  Морс (из ягод)","  Berry juice", "d1"),
+    dep("d1h","drinks","  Компот (из сухофруктов)","  Dried fruit compote", "d1"),
+    dep("d1i","drinks","  Кефир (домашний)","  Kefir (homemade)", "d1"),
+    dep("d1j","drinks","  Ряженка","  Ryazhenka", "d1"),
+    dep("d1k","drinks","  Айран","  Ayran", "d1"),
+    dep("d1l","drinks","  Кумыс","  Kumis", "d1"),
+    dep("d1m","drinks","  Кобылье молоко","  Mare's milk", "d1"),
+    dep("d1n","drinks","  Козье молоко","  Goat's milk", "d1"),
+    dep("d1o","drinks","  Энергетический напиток (впервые)","  Energy drink (first time)", "d1"),
+    dep("d1p","drinks","  Газировка (впервые)","  Soda (first time)", "d1"),
+    dep("d1q","drinks","  Сок из банки (впервые)","  Canned juice (first time)", "d1"),
+    dep("d1r","drinks","  Свежевыжатый сок (впервые)","  Fresh juice (first time)", "d1"),
+
+    dep("d2","drinks","Пил алкоголь","Drank alcohol"),
+    dep("d2a","drinks","  Шампанское","  Champagne", "d2"),
+    dep("d2b","drinks","  Пиво","  Beer", "d2"),
+    dep("d2c","drinks","  Вино","  Wine", "d2"),
+    dep("d2d","drinks","  Водка","  Vodka", "d2"),
+    dep("d2e","drinks","  Коньяк","  Cognac", "d2"),
+    dep("d2f","drinks","  Бренди","  Brandy", "d2"),
+    dep("d2g","drinks","  Ром","  Rum", "d2"),
+    dep("d2h","drinks","  Текила","  Tequila", "d2"),
+    dep("d2i","drinks","  Виски (бурбон, скотч)","  Whiskey (bourbon, scotch)", "d2"),
+    dep("d2j","drinks","  Джин","  Gin", "d2"),
+    dep("d2k","drinks","  Самогон (домашний)","  Moonshine (homemade)", "d2"),
+    dep("d2l","drinks","  Кальвадос","  Calvados", "d2"),
+    dep("d2m","drinks","  Граппа","  Grappa", "d2"),
+    dep("d2n","drinks","  Ракы (турецкий)","  Raki (Turkish)", "d2"),
+    dep("d2o","drinks","  Узо (греческий)","  Ouzo (Greek)", "d2"),
+    dep("d2p","drinks","  Самбука","  Sambuca", "d2"),
+    dep("d2q","drinks","  Амаретто","  Amaretto", "d2"),
+    dep("d2r","drinks","  Ликёр","  Liqueur", "d2"),
+    dep("d2s","drinks","  Мартини (вермут)","  Martini (vermouth)", "d2"),
+    dep("d2t","drinks","  Херес","  Sherry", "d2"),
+    dep("d2u","drinks","  Портвейн","  Port wine", "d2"),
+    dep("d2v","drinks","  Мадера","  Madeira", "d2"),
+    dep("d2w","drinks","  Саке (японское)","  Sake (Japanese)", "d2"),
+    dep("d2x","drinks","  Мескаль","  Mezcal", "d2"),
+    dep("d2y","drinks","  Мохито","  Mojito", "d2"),
+    dep("d2z","drinks","  Куба Либре","  Cuba Libre", "d2"),
+    dep("d2aa","drinks","  Дайкири","  Daiquiri", "d2"),
+    dep("d2ab","drinks","  Маргарита","  Margarita", "d2"),
+    dep("d2ac","drinks","  Отвёртка","  Screwdriver", "d2"),
+    dep("d2ad","drinks","  Б-52","  B-52", "d2"),
+    dep("d2ae","drinks","  Коктейль (впервые)","  Cocktail (first time)", "d2"),
+
+    // ===== WATER =====
+    dep("w1","water","Был на море","Been to the sea"),
+    dep("w2","water","Был на речке","Been to a river"),
+    dep("w3","water","Был на озере","Been to a lake"),
+    dep("w4","water","Был на океане","Been to the ocean"),
+
+    // ===== ADULT =====
+    dep("a1","adult","Пил экзотическое пиво","Drank exotic beer", null, null, true),
+    dep("a1a","adult","  Пиво с фруктами","  Fruit beer", "a1", null, true),
+    dep("a1b","adult","  Пиво с мёдом","  Honey beer", "a1", null, true),
+    dep("a1c","adult","  Пиво с дымом","  Smoked beer", "a1", null, true),
+    dep("a1d","adult","  Тёмное пиво (портер, стаут)","  Dark beer (porter, stout)", "a1", null, true),
+    dep("a1e","adult","  Пшеничное пиво (вайсбир)","  Wheat beer (weissbier)", "a1", null, true),
+    dep("a1f","adult","  Светлое пиво (лагер)","  Light beer (lager)", "a1", null, true),
+    dep("a1g","adult","  Красное пиво (эль)","  Red beer (ale)", "a1", null, true),
+    dep("a1h","adult","  Кислое пиво (кислый эль)","  Sour beer (sour ale)", "a1", null, true),
+    dep("a1i","adult","  Нефильтрованное пиво","  Unfiltered beer", "a1", null, true),
+    dep("a2","adult","Курил","Smoked", null, null, true),
+    dep("a3","adult","Смотрел видео для взрослых","Watched adult videos", null, null, true),
+    dep("a4","adult","Мастурбировал","Masturbated", null, null, true),
+    dep("a5","adult","Целовался","Kissed someone", null, null, true),
+    dep("a6","adult","Занимался сексом","Had sex", null, null, true),
+    dep("a7","adult","Расставался","Broke up", null, null, true),
+    dep("a8","adult","Получил травму на войне","Got injured in war", null, null, true),
+
+    // ===== SPORTS =====
+    dep("s1","sports","Играл в футбол","Played football"),
+    dep("s2","sports","Играл в хоккей","Played hockey"),
+    dep("s3","sports","Играл в теннис","Played tennis"),
+    dep("s4","sports","Играл в баскетбол","Played basketball"),
+    dep("s5","sports","Играл в волейбол","Played volleyball"),
+    dep("s6","sports","Бегал марафон","Ran a marathon"),
+    dep("s7","sports","Прыгал с парашютом","Skydived"),
+    dep("s8","sports","Нырял с аквалангом","Scuba dived"),
+    dep("s9","sports","Занимался спортом регулярно","Exercised regularly"),
+    dep("s9a","sports","  Фитнес","  Fitness", "s9"),
+    dep("s9b","sports","  Йога","  Yoga", "s9"),
+    dep("s9c","sports","  Пилатес","  Pilates", "s9"),
+    dep("s9d","sports","  Карате","  Karate", "s9"),
+    dep("s9e","sports","  Дзюдо","  Judo", "s9"),
+    dep("s9f","sports","  Самбо","  Sambo", "s9"),
+    dep("s9g","sports","  Бокс","  Boxing", "s9"),
+    dep("s9h","sports","  Кикбоксинг","  Kickboxing", "s9"),
+    dep("s9i","sports","  Тхэквондо","  Taekwondo", "s9"),
+    dep("s9j","sports","  Борьба","  Wrestling", "s9"),
+    dep("s9k","sports","  Фехтование","  Fencing", "s9"),
+    dep("s9l","sports","  Плавание","  Swimming", "s9"),
+    dep("s9m","sports","  Бадминтон","  Badminton", "s9"),
+    dep("s9n","sports","  Настольный теннис","  Table tennis", "s9"),
+    dep("s9o","sports","  Скейтбординг","  Skateboarding", "s9"),
+    dep("s9p","sports","  Конькобежный спорт","  Speed skating", "s9"),
+    dep("s9q","sports","  Кёрлинг","  Curling", "s9"),
+
+    // ===== EVENTS =====
+    dep("ev1","events","Был на концерте","Been to a concert"),
+    dep("ev2","events","Был на Олимпийских играх","Been to the Olympic Games"),
+    dep("ev3","events","Был на Евровидении","Been to Eurovision"),
+    dep("ev4","events","Был на Чемпионате Мира","Been to the World Championship"),
+    dep("ev5","events","Был на Интервидении","Been to Intervision"),
+    dep("ev6","events","Был на музыкальном фестивале","Been to a music festival"),
+    dep("ev7","events","Был на рок-фестивале","Been to a rock festival"),
+    dep("ev8","events","Был на джазовом фестивале","Been to a jazz festival"),
+    dep("ev9","events","Был на электронном фестивале","Been to an electronic festival"),
+    dep("ev10","events","Был на фестивале искусств","Been to an arts festival"),
+    dep("ev11","events","Был на кинофестивале","Been to a film festival"),
+    dep("ev12","events","Был на аниме-фестивале","Been to an anime festival"),
+    dep("ev13","events","Был на Comic-Con","Been to Comic-Con"),
+    dep("ev14","events","Был на фестивале косплея","Been to a cosplay festival"),
+    dep("ev15","events","Был на выставке","Been to an exhibition"),
+    dep("ev16","events","Был на ярмарке","Been to a fair"),
+
+    // ===== ENTERTAINMENT =====
+    dep("e1","entertainment","Играл в видеоигры","Played video games"),
+    dep("e1a","entertainment","  Играл на приставке (PlayStation)","  PlayStation", "e1"),
+    dep("e1b","entertainment","  Играл на приставке (Xbox)","  Xbox", "e1"),
+    dep("e1c","entertainment","  Играл на приставке (Nintendo)","  Nintendo", "e1"),
+    dep("e1d","entertainment","  Играл на компьютере (PC)","  PC", "e1"),
+    dep("e1e","entertainment","  Играл на телефоне","  Mobile", "e1"),
+    dep("e1f","entertainment","  Играл в многопользовательской игре","  Multiplayer", "e1"),
+    dep("e1g","entertainment","  Играл в кооперативе","  Co-op", "e1"),
+    // ===== КЛАССИЧЕСКИЕ ИГРЫ =====
+    dep("e1h","entertainment","  Tetris","  Tetris", "e1"),
+    dep("e1i","entertainment","  Pac-Man","  Pac-Man", "e1"),
+    dep("e1j","entertainment","  Super Mario Bros.","  Super Mario Bros.", "e1"),
+    dep("e1k","entertainment","  Super Mario Bros. 2","  Super Mario Bros. 2", "e1"),
+    dep("e1l","entertainment","  Super Mario Bros. 3","  Super Mario Bros. 3", "e1"),
+    dep("e1m","entertainment","  Super Mario Land","  Super Mario Land", "e1"),
+    dep("e1n","entertainment","  Super Mario World","  Super Mario World", "e1"),
+    dep("e1o","entertainment","  New Super Mario Bros.","  New Super Mario Bros.", "e1"),
+    dep("e1p","entertainment","  Super Mario Bros. Wonder","  Super Mario Bros. Wonder", "e1"),
+    dep("e1q","entertainment","  Super Mario 64","  Super Mario 64", "e1"),
+    dep("e1r","entertainment","  Super Mario Sunshine","  Super Mario Sunshine", "e1"),
+    dep("e1s","entertainment","  Super Mario Galaxy","  Super Mario Galaxy", "e1"),
+    dep("e1t","entertainment","  Super Mario Galaxy 2","  Super Mario Galaxy 2", "e1"),
+    dep("e1u","entertainment","  Super Mario 3D Land","  Super Mario 3D Land", "e1"),
+    dep("e1v","entertainment","  Super Mario 3D World","  Super Mario 3D World", "e1"),
+    dep("e1w","entertainment","  Super Mario Odyssey","  Super Mario Odyssey", "e1"),
+    dep("e1x","entertainment","  Sonic the Hedgehog","  Sonic the Hedgehog", "e1"),
+    dep("e1y","entertainment","  Sonic the Hedgehog 2","  Sonic the Hedgehog 2", "e1"),
+    dep("e1z","entertainment","  Sonic CD","  Sonic CD", "e1"),
+    dep("e1aa","entertainment","  Sonic the Hedgehog 3 & Knuckles","  Sonic the Hedgehog 3 & Knuckles", "e1"),
+    dep("e1ab","entertainment","  Sonic Mania","  Sonic Mania", "e1"),
+    dep("e1ac","entertainment","  Sonic Adventure","  Sonic Adventure", "e1"),
+    dep("e1ad","entertainment","  Sonic Adventure 2","  Sonic Adventure 2", "e1"),
+    dep("e1ae","entertainment","  Sonic Heroes","  Sonic Heroes", "e1"),
+    dep("e1af","entertainment","  Shadow the Hedgehog","  Shadow the Hedgehog", "e1"),
+    dep("e1ag","entertainment","  Sonic '06","  Sonic '06", "e1"),
+    dep("e1ah","entertainment","  Sonic Unleashed","  Sonic Unleashed", "e1"),
+    dep("e1ai","entertainment","  Sonic Colors","  Sonic Colors", "e1"),
+    dep("e1aj","entertainment","  Sonic Generations","  Sonic Generations", "e1"),
+    dep("e1ak","entertainment","  Sonic Frontiers","  Sonic Frontiers", "e1"),
+    dep("e1al","entertainment","  Mortal Kombat","  Mortal Kombat", "e1"),
+    dep("e1am","entertainment","  Mortal Kombat 2","  Mortal Kombat 2", "e1"),
+    // ===== DOOM СЕРИЯ =====
+    dep("e1an","entertainment","  DOOM (1993)","  DOOM (1993)", "e1"),
+    dep("e1ao","entertainment","  DOOM 2","  DOOM 2", "e1"),
+    dep("e1ap","entertainment","  DOOM 3","  DOOM 3", "e1"),
+    dep("e1aq","entertainment","  DOOM 64","  DOOM 64", "e1"),
+    dep("e1ar","entertainment","  DOOM RPG","  DOOM RPG", "e1"),
+    dep("e1as","entertainment","  DOOM 2 RPG","  DOOM 2 RPG", "e1"),
+    dep("e1at","entertainment","  DOOM (2016)","  DOOM (2016)", "e1"),
+    dep("e1au","entertainment","  DOOM Eternal","  DOOM Eternal", "e1"),
+    dep("e1av","entertainment","  DOOM Eternal: The Ancient Gods","  DOOM Eternal: The Ancient Gods", "e1"),
+    dep("e1aw","entertainment","  DOOM: The Dark Ages","  DOOM: The Dark Ages", "e1"),
+    // ===== HALF-LIFE СЕРИЯ =====
+    dep("e1ax","entertainment","  Half-Life","  Half-Life", "e1"),
+    dep("e1ay","entertainment","  Half-Life 2","  Half-Life 2", "e1"),
+    dep("e1az","entertainment","  Half-Life: Source","  Half-Life: Source", "e1"),
+    dep("e1ba","entertainment","  Half-Life: Black Mesa","  Half-Life: Black Mesa", "e1"),
+    dep("e1bb","entertainment","  Half-Life: Alyx","  Half-Life: Alyx", "e1"),
+    dep("e1bc","entertainment","  Garry's Mod","  Garry's Mod", "e1"),
+    // ===== GTA СЕРИЯ =====
+    dep("e1bd","entertainment","  GTA","  GTA", "e1"),
+    dep("e1be","entertainment","  GTA 2","  GTA 2", "e1"),
+    dep("e1bf","entertainment","  GTA 3","  GTA 3", "e1"),
+    dep("e1bg","entertainment","  GTA: San Andreas","  GTA: San Andreas", "e1"),
+    dep("e1bh","entertainment","  GTA 4","  GTA 4", "e1"),
+    dep("e1bi","entertainment","  GTA 5","  GTA 5", "e1"),
+    dep("e1bj","entertainment","  GTA 6","  GTA 6", "e1"),
+    // ===== ШУТЕРЫ =====
+    dep("e1bk","entertainment","  CS:GO","  CS:GO", "e1"),
+    dep("e1bl","entertainment","  CS:GO 2","  CS:GO 2", "e1"),
+    dep("e1bm","entertainment","  VALORANT","  VALORANT", "e1"),
+    dep("e1bn","entertainment","  Fortnite","  Fortnite", "e1"),
+    dep("e1bo","entertainment","  PUBG","  PUBG", "e1"),
+    dep("e1bp","entertainment","  Apex Legends","  Apex Legends", "e1"),
+    dep("e1bq","entertainment","  Call of Duty","  Call of Duty", "e1"),
+    dep("e1br","entertainment","  Battlefield","  Battlefield", "e1"),
+    dep("e1bs","entertainment","  Overwatch","  Overwatch", "e1"),
+    dep("e1bt","entertainment","  Team Fortress 2","  Team Fortress 2", "e1"),
+    dep("e1bu","entertainment","  Tom Clancy's Rainbow Six Siege","  Tom Clancy's Rainbow Six Siege", "e1"),
+    dep("e1bv","entertainment","  War Thunder","  War Thunder", "e1"),
+    dep("e1bw","entertainment","  World of Tanks","  World of Tanks", "e1"),
+    dep("e1bx","entertainment","  World of Tanks Blitz","  World of Tanks Blitz", "e1"),
+    dep("e1by","entertainment","  Tanks Blitz","  Tanks Blitz", "e1", "ru"),
+    dep("e1bz","entertainment","  World of Warships","  World of Warships", "e1"),
+    dep("e1ca","entertainment","  Warframe","  Warframe", "e1"),
+    dep("e1cb","entertainment","  Rust","  Rust", "e1"),
+    dep("e1cc","entertainment","  Dead by Daylight","  Dead by Daylight", "e1"),
+    // ===== ММО И МОБА =====
+    dep("e1cd","entertainment","  World of Warcraft","  World of Warcraft", "e1"),
+    dep("e1ce","entertainment","  Dota 2","  Dota 2", "e1"),
+    dep("e1cf","entertainment","  League of Legends","  League of Legends", "e1"),
+    // ===== СИМУЛЯТОРЫ =====
+    dep("e1cg","entertainment","  Euro Truck Simulator","  Euro Truck Simulator", "e1"),
+    dep("e1ch","entertainment","  Euro Truck Simulator 2","  Euro Truck Simulator 2", "e1"),
+    dep("e1ci","entertainment","  Sims","  Sims", "e1"),
+    dep("e1cj","entertainment","  Sims 2","  Sims 2", "e1"),
+    dep("e1ck","entertainment","  Sims 3","  Sims 3", "e1"),
+    dep("e1cl","entertainment","  Sims 4","  Sims 4", "e1"),
+    // ===== ПЕСОЧНИЦЫ И ВЫЖИВАНИЕ =====
+    dep("e1cm","entertainment","  Minecraft","  Minecraft", "e1"),
+    dep("e1cn","entertainment","  Roblox","  Roblox", "e1"),
+    dep("e1co","entertainment","  Terraria","  Terraria", "e1"),
+    dep("e1cp","entertainment","  Palworld","  Palworld", "e1"),
+    dep("e1cq","entertainment","  Subnautica","  Subnautica", "e1"),
+    dep("e1cr","entertainment","  Subnautica 2","  Subnautica 2", "e1"),
+    // ===== РПГ =====
+    dep("e1cs","entertainment","  Baldur's Gate 3","  Baldur's Gate 3", "e1"),
+    dep("e1ct","entertainment","  Cyberpunk 2077","  Cyberpunk 2077", "e1"),
+    dep("e1cu","entertainment","  Path of Exile 2","  Path of Exile 2", "e1"),
+    dep("e1cv","entertainment","  Genshin Impact","  Genshin Impact", "e1"),
+    dep("e1cw","entertainment","  Zenless Zone Zero","  Zenless Zone Zero", "e1"),
+    // ===== ФАЙТИНГИ И ЭКШН =====
+    dep("e1cx","entertainment","  Shadow Fight 2","  Shadow Fight 2", "e1"),
+    dep("e1cy","entertainment","  Shadow Fight 3","  Shadow Fight 3", "e1"),
+    dep("e1cz","entertainment","  Shadow Fight: Arena","  Shadow Fight: Arena", "e1"),
+    dep("e1da","entertainment","  NARAKA: BLADEPOINT","  NARAKA: BLADEPOINT", "e1"),
+    dep("e1db","entertainment","  Marvel Rivals","  Marvel Rivals", "e1"),
+    // ===== МОБИЛЬНЫЕ ИГРЫ =====
+    dep("e1dc","entertainment","  Subway Surfers","  Subway Surfers", "e1"),
+    dep("e1dd","entertainment","  Brawl Stars","  Brawl Stars", "e1"),
+    dep("e1de","entertainment","  Clash Royale","  Clash Royale", "e1"),
+    dep("e1df","entertainment","  Pokémon GO","  Pokémon GO", "e1"),
+    dep("e1dg","entertainment","  Plague Inc","  Plague Inc", "e1"),
+    // ===== ДРУГИЕ =====
+    dep("e1dh","entertainment","  EA SPORTS FC 26","  EA SPORTS FC 26", "e1"),
+    dep("e1di","entertainment","  Hytale","  Hytale", "e1"),
+
+    dep("e2","entertainment","Был в аквапарке","Been to a water park"),
+    dep("e3","entertainment","Был в парке развлечений","Been to an amusement park"),
+    dep("e4","entertainment","Был в Disneyland","Been to Disneyland"),
+    dep("e5","entertainment","Был в батутном центре","Been to a trampoline park")
   ];
 
-  const CAT_ORDER = ["milestones","family","internet","tech","nature","extreme","education","career","art","psychology","legal","pets","purchases","travel","transport","languages","food","drinks","water","adult","sports","events","entertainment"];
+  const CAT_ORDER = ["milestones","family","health","internet","tech","nature","extreme","education","career","art","psychology","politics","charity","legal","pets","purchases","finance","home","travel","transport","languages","food","drinks","water","adult","sports","events","entertainment"];
   const RELIGION_HIDE = { none:[], christianity:[], islam:["pork"], judaism:["pork","shellfish","horse"], hinduism:["beef"], buddhism:["meat"] };
   const SCREEN_SIZES = ["phone","tablet","computer","tv","car"];
 
   // ===== STATE =====
-  const STORAGE_KEY = "life-passport-state-v6";
+  const STORAGE_KEY = "life-passport-state-v7";
   let state = {
     lang:"ru",
     religion:"none",
@@ -1125,73 +1627,40 @@
       if(t.tags && t.tags.some(tag => hide.includes(tag))) return false;
       if(t.dependsOn && !state.done[t.dependsOn]) return false;
       if(t.adultOnly && state.age === "under18") return false;
+      if(t.genderOnly && t.genderOnly !== state.gender) return false;
       return true;
     });
   }
 
   function getPronoun(text){
     if(state.gender === "female" && state.lang === "ru"){
-      return text.replace(/получил/gi,"получила")
-                 .replace(/купил/gi,"купила")
-                 .replace(/завёл/gi,"завела")
-                 .replace(/сменил/gi,"сменила")
-                 .replace(/переехал/gi,"переехала")
-                 .replace(/стал/gi,"стала")
-                 .replace(/сыграл/gi,"сыграла")
-                 .replace(/развёлся/gi,"развелась")
-                 .replace(/вышел/gi,"вышла")
-                 .replace(/ездил/gi,"ездила")
-                 .replace(/летал/gi,"летала")
-                 .replace(/плавал/gi,"плавала")
-                 .replace(/выучил/gi,"выучила")
-                 .replace(/пробовал/gi,"пробовала")
-                 .replace(/ел/gi,"ела")
-                 .replace(/ловил/gi,"ловила")
-                 .replace(/играл/gi,"играла")
-                 .replace(/бегал/gi,"бегала")
-                 .replace(/прыгал/gi,"прыгала")
-                 .replace(/нырял/gi,"ныряла")
-                 .replace(/катался/gi,"каталась")
-                 .replace(/курил/gi,"курила")
-                 .replace(/пил/gi,"пила")
-                 .replace(/был/gi,"была")
-                 .replace(/мастурбировал/gi,"мастурбировала")
-                 .replace(/целовался/gi,"целовалась")
-                 .replace(/занимался/gi,"занималась")
-                 .replace(/сидел/gi,"сидела")
-                 .replace(/получал/gi,"получала")
-                 .replace(/закончил/gi,"закончила")
-                 .replace(/отслужил/gi,"отслужила")
-                 .replace(/смотрел/gi,"смотрела")
-                 .replace(/исключён/gi,"исключена")
-                 .replace(/усыновил/gi,"усыновила")
-                 .replace(/воспитывал/gi,"воспитывала")
-                 .replace(/создал/gi,"создала")
-                 .replace(/сделал/gi,"сделала")
-                 .replace(/сажал/gi,"сажала")
-                 .replace(/прыгал/gi,"прыгала")
-                 .replace(/летал/gi,"летала")
-                 .replace(/занимался/gi,"занималась")
-                 .replace(/умею/gi,"умею")
-                 .replace(/ночевал/gi,"ночевала")
-                 .replace(/спускался/gi,"спускалась")
-                 .replace(/плавал/gi,"плавала")
-                 .replace(/кормил/gi,"кормила")
-                 .replace(/прошёл/gi,"прошла")
-                 .replace(/защитил/gi,"защитила")
-                 .replace(/написал/gi,"написала")
-                 .replace(/участвовал/gi,"участвовала")
-                 .replace(/победил/gi,"победила")
-                 .replace(/работал/gi,"работала")
-                 .replace(/отремонтировал/gi,"отремонтировала")
-                 .replace(/рисовал/gi,"рисовала")
-                 .replace(/выступал/gi,"выступала")
-                 .replace(/снимал/gi,"снимала")
-                 .replace(/монтировал/gi,"монтировала")
-                 .replace(/писал/gi,"писала")
-                 .replace(/простил/gi,"простила")
-                 .replace(/избавился/gi,"избавилась")
-                 .replace(/попал/gi,"попала");
+      const replacements = {
+        'получил':'получила','купил':'купила','завёл':'завела','сменил':'сменила',
+        'переехал':'переехала','стал':'стала','сыграл':'сыграла','развёлся':'развелась',
+        'вышел':'вышла','ездил':'ездила','летал':'летала','плавал':'плавала',
+        'выучил':'выучила','пробовал':'пробовала','ел':'ела','ловил':'ловила',
+        'играл':'играла','бегал':'бегала','прыгал':'прыгала','нырял':'ныряла',
+        'катался':'каталась','курил':'курила','пил':'пила','был':'была',
+        'мастурбировал':'мастурбировала','целовался':'целовалась','занимался':'занималась',
+        'сидел':'сидела','получал':'получала','закончил':'закончила','отслужил':'отслужила',
+        'смотрел':'смотрела','исключён':'исключена','усыновил':'усыновила',
+        'воспитывал':'воспитывала','создал':'создала','сделал':'сделала',
+        'сажал':'сажала','ночевал':'ночевала','спускался':'спускалась','кормил':'кормила',
+        'прошёл':'прошла','защитил':'защитила','написал':'написала','участвовал':'участвовала',
+        'победил':'победила','работал':'работала','отремонтировал':'отремонтировала',
+        'рисовал':'рисовала','выступал':'выступала','снимал':'снимала','монтировал':'монтировала',
+        'писал':'писала','простил':'простила','избавился':'избавилась','попал':'попала',
+        'присутствовал':'присутствовала','перерезал':'перерезала','выбирал':'выбирала',
+        'крестил':'крестила','содержал':'содержала','ухаживал':'ухаживала','потерял':'потеряла',
+        'организовал':'организовала','собрал':'собрала','украсил':'украсила','приготовил':'приготовила',
+        'испёк':'испекла','сварил':'сварила','жарил':'жарила','голосовал':'голосовала',
+        'побывал':'побывала','пересёк':'пересекла','путешествовал':'путешествовала'
+      };
+      let result = text;
+      for(const [key, val] of Object.entries(replacements)){
+        result = result.replace(new RegExp(key, 'gi'), val);
+      }
+      return result;
     }
     return text;
   }
@@ -1244,7 +1713,7 @@
       b.classList.toggle("active", b.dataset.lang === state.lang);
     });
     const badge = document.getElementById("versionBadge");
-    if(badge) badge.textContent = "V6";
+    if(badge) badge.textContent = "V7";
   }
 
   const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 L9.5 18 L20 6"/></svg>';
@@ -1464,7 +1933,7 @@
   // ===== Export / Import =====
   function exportData(type){
     const data = {
-      version: "V6",
+      version: "V7",
       exportDate: new Date().toISOString(),
       state: state,
       tasks: TASKS
@@ -1520,7 +1989,7 @@
   document.getElementById("exportCSV").addEventListener("click", ()=>exportData('csv'));
   document.getElementById("exportPDF").addEventListener("click", ()=>exportData('pdf'));
 
-  // ===== Import functions =====
+  // ===== Import =====
   function handleImport(file, format){
     const reader = new FileReader();
     reader.onload = function(ev){
