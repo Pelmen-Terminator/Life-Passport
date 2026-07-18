@@ -275,8 +275,8 @@
     box-shadow: var(--card-shadow);
     position:relative;
     overflow-y: auto;
-    max-height: 85vh;
-    min-height: 300px;
+    max-height: 95vh;
+    min-height: 500px;
     transition: background .3s, color .3s, max-height .3s;
   }
   .page::-webkit-scrollbar{
@@ -344,6 +344,7 @@
   .cat-body{
     transition: max-height .5s ease, opacity .4s ease;
     overflow: hidden;
+    max-height: none !important;
   }
   .cat-body.closed{
     max-height: 0 !important;
@@ -508,7 +509,7 @@
     .badge .bar{ width:80px; }
     .settings-panel{ grid-template-columns:1fr; }
     .task-date{ min-width:70px; font-size:.65rem; }
-    .page{ max-height: 75vh; min-height: 250px; }
+    .page{ max-height: 90vh; min-height: 400px; }
     .import-area .row{ flex-direction:column; align-items:stretch; }
     .import-area .row label, .import-area .row button{ text-align:center; }
   }
@@ -1756,7 +1757,7 @@
 
       const body = document.createElement("div");
       body.className = "cat-body" + (state.catHidden[catKey] ? " closed" : "");
-      body.style.maxHeight = state.catHidden[catKey] ? "0" : "5000px";
+      body.style.maxHeight = state.catHidden[catKey] ? "0" : "none";
 
       items.forEach(item=>{
         const row = document.createElement("div");
