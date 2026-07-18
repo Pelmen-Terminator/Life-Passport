@@ -1,4 +1,4 @@
-# Life Passport / Паспорт жизни V7
+# Life Passport / Паспорт жизни V8
 
 ## ⚙️ Настройки
 
